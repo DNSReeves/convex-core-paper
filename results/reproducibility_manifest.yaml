@@ -22,3 +22,6 @@ llm_in_portfolio_math: false
 tier2_done: [per-sleeve crisis attribution, ablation/robustness grid, slippage sensitivity,
              bootstrap significance test]
 still_planned: [Deflated Sharpe Ratio, PBO/CSCV, walk-forward re-validation of regime cutoffs]
+repository: https://github.com/DNSReeves/convex-core-paper
+license_code: PolyForm-Noncommercial-1.0.0
+license_paper: CC-BY-NC-4.0

@@ -20,6 +20,7 @@ ROOT = "${PAPER_ROOT}"
 BJSON = f"{ROOT}/dnsr-agent/workspace/pub_report/benchmarks.json"
 MANIFEST = f"{ROOT}/dnsr-agent/workspace/pub_report/reproducibility_manifest.yaml"
 OUT = "${HOME}/DNSR_Convex_Core_Publication_2026-06-14.html"
+REPO_URL = "https://github.com/DNSReeves/convex-core-paper"
 
 B = json.load(open(BJSON))
 MAN = open(MANIFEST).read()
@@ -738,6 +739,7 @@ P.append(f"""
 {appendix_e()}
 
 <h2>Appendix F — Reproducibility Manifest</h2>
+<p><b>Code and data availability.</b> The model engine, benchmark/report code, computed result artifacts, and this manifest are public at <a href="{REPO_URL}">{REPO_URL}</a> — code under the PolyForm Noncommercial License 1.0.0, the paper and documentation under CC&nbsp;BY-NC&nbsp;4.0. The vendor-licensed price/macro data (EODHD/FMP/FRED) is <i>not</i> redistributed; the repository documents the schema and series so the warehouse can be rebuilt from one's own vendor keys, and ships the derived model-output artifacts so every table and figure reproduces without the raw data.</p>
 <pre>{MAN.strip()}</pre>
 
 <h2>Appendix G — Glossary</h2>

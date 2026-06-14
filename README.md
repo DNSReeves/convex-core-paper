@@ -81,4 +81,11 @@ AI-conducted, pre-registered research process. See the paper’s §3.1.
 
 ## License
 
-See [`LICENSE`](LICENSE). _(License choice pending — see the note in that file.)_
+- **Code** (engine, report/research scripts, tests): **PolyForm Noncommercial License 1.0.0** —
+  source-available and fully auditable; noncommercial use permitted, commercial use requires a
+  separate grant from the licensor. SPDX: `PolyForm-Noncommercial-1.0.0`. Full text in [`LICENSE`](LICENSE).
+- **Paper & documentation** (`paper/`, this README, `data/README.md`): **CC BY-NC 4.0**
+  (https://creativecommons.org/licenses/by-nc/4.0/).
+
+Copyright © 2026 DNSR Investments, LLC. Licensor: David Reeves
+(https://www.linkedin.com/in/david-reeves-8a664524).
