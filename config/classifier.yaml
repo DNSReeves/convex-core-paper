@@ -1,0 +1,83 @@
+# etf-trade-classifier — run configuration
+# Every output file header stamps: sha256 of this file + git code version + data
+# snapshot date (max dates of the source tables) — base §25 via ADDENDUM A6.
+
+data:
+  # The ONE integration key (base §20): point at the live warehouse or the
+  # screener replica. Always opened read-only (file:...?mode=ro).
+  db_path: data/etf_data.db
+
+universe:
+  # INFERRED from ADDENDUM A5 (see SPEC_GAPS.md #universe): the 11 SPDR sectors.
+  # XLRE/XLC enter at inception per PIT universe rules — board runs 9-wide before.
+  tickers: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLRE, XLC]
+  # PROVISIONAL liquidity floor (SPEC_GAPS #13) — base spec defines the real one.
+  min_dollar_vol_20d: 1.0e6
+  # Eligibility: history >= max indicator window + 10 sessions (A2 Step 0).
+  max_indicator_window: 200
+  history_buffer_sessions: 10
+
+benchmarks:
+  # Base §1.1/§2: SPY is the CONFIRMED benchmark for the default sector universe.
+  # General universes map by asset class (tradeclassifier/alignment.py
+  # DEFAULT_BENCHMARKS, base §2.1); no safe inference → RS unavailable, never
+  # silently SPY (§2 closing rule).
+  default: { ticker: SPY, confirmed: true }
+
+costs:
+  slippage_bps: 5        # flat, per side (A6); stated in every report
+  commission_per_side: 0.0
+
+execution:
+  fill: next_open        # A6 — daily_prices.open; NULL open → next close, logged
+  fallback_log_key: exec_fallback_close
+
+regime:
+  confirm_days: 3        # A4 hysteresis — primary flip needs N consecutive sessions
+  rules_file: config/regime_rules.yaml   # PROVISIONAL until base §9 lands
+  comparison_log: out/regime_history.csv # MHD/RACE logged read-only, omit-if-absent
+
+walkforward:
+  anchor_start: "2005-01-01"   # matches MHD history depth (A5)
+  train_years: 5
+  validate_years: 1
+  test_months: 3
+  step_months: 1
+  search_n: 400                # coarse Sobol/random per fold
+  seed: 42                     # A6 determinism pin
+  top_decile_rerank: true
+  stability_clamp_pct: 0.25    # fold-to-fold parameter delta cap (of each bound's range)
+  min_trades_per_fold: 30      # below → extend test window to 6 months + low_trade_fold
+  extended_test_months: 6
+  min_trades_aggregate: 150    # below → run reported statistically insufficient
+
+# Base §11 — the 7 composite weights (defaults + walk-forward bounds).
+# Canonical copies live in tradeclassifier/tables.py (DEFAULT_WEIGHTS /
+# WEIGHT_BOUNDS); these are the operator-visible mirror.
+composite_weights:
+  real:
+    trend: 0.22
+    momentum: 0.18
+    relative_strength: 0.18
+    oversold_reversal: 0.18
+    risk: 0.10
+    regime_alignment: 0.08
+    portfolio_fit: 0.06
+  bounds:
+    trend: [0.10, 0.35]
+    momentum: [0.10, 0.30]
+    relative_strength: [0.10, 0.30]
+    oversold_reversal: [0.05, 0.30]
+    risk: [0.05, 0.25]
+    regime_alignment: [0.00, 0.20]
+    portfolio_fit: [0.00, 0.15]
+
+classification:
+  # SPEC_GAPS #3-#6 — band cut-point DEFAULTS from base §15.1 shape (80/65/45-65/30);
+  # each searched within ±10, monotonicity enforced (A5).
+  cut_points:
+    strong_buy: 80
+    add: 65
+    hold_low: 45
+    sell: 30
+  min_holding_days_choices: [5, 10, 15, 20]

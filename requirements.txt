@@ -1,0 +1,8 @@
+# Convex Core companion — engine + report
+numpy>=1.26
+pandas>=2.1
+pyyaml>=6.0
+matplotlib>=3.8
+pytest>=8.0
+# optional: HTML->PDF for the report
+playwright>=1.40

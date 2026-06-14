@@ -1,0 +1,25 @@
+LICENSE — DECISION PENDING (do not publish until chosen)
+========================================================
+
+This is a placeholder. The principal (David Reeves, DNSR Investments, LLC) must
+choose a license before this repository is made public. Two sensible options:
+
+OPTION A — Maximum openness (recommended if the goal is citation/credibility):
+  * Code:  Apache License 2.0  (permissive + explicit patent grant)
+  * Paper: Creative Commons Attribution 4.0 (CC-BY-4.0)
+  Anyone may use, modify, and commercialize with attribution. Standard for
+  reproducible-research artifacts.
+
+OPTION B — Transparent but non-commercial (recommended if you want to retain
+commercial rights to a model you run live):
+  * Code:  PolyForm Noncommercial 1.0.0  (source-available; no commercial use
+           without a separate grant)
+  * Paper: CC-BY-NC-4.0
+  Fully auditable and reproducible, but others may not commercialize the engine.
+
+RECOMMENDATION: Option B. The repository’s purpose is transparency and
+auditability, which non-commercial source-available licensing fully satisfies,
+while preserving the principal’s commercial rights to a model still used to
+manage capital. Swap this file for the chosen license text before any public push.
+
+Copyright (c) 2026 DNSR Investments, LLC. All rights reserved until a license is applied.

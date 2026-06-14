@@ -1,0 +1,78 @@
+# Max-alpha-at-target-beta model — curated sleeved universe (design spec §5).
+# All 68 tickers verified present in the warehouse with >300 sessions (2026-06-11).
+# Curated, NOT filter-everything: a screened universe of ~1,500 hands the optimizer
+# correlated clones of the same bet. Names enter at inception (PIT eligibility reuses
+# universe.py Step-0: history/liquidity/quarantine).
+
+benchmark: SPY
+risk_free_series: DGS3MO   # 3-month T-bill, FRED (Tier P)
+
+beta_presets:
+  defensive:  [0.25, 0.50]
+  moderate:   [0.50, 0.80]
+  market:     [0.80, 1.10]
+  aggressive: [1.10, 1.50]
+
+# Phase C verdict (2026-06-11 ladder, adaptive shrinkage + mid-aim):
+# - defensive + moderate realize IN BAND (0.294 / 0.501) with positive alpha.
+# - market: estimated beta tops out ~0.86 and realizes ~0.69 — NOT a leverage
+#   problem but the anti-concentration caps (w_max 0.20 broad): a book capped
+#   at 20%/name can't reach SPY-like realized beta. Relax caps or accept the
+#   shortfall; flagged in run output via the tracking columns.
+# - aggressive is structurally infeasible long-only, full stop.
+# Realized long-only beta ceiling at current caps ≈ 0.75.
+presets_requiring_leverage: [aggressive]
+
+sleeves:
+  broad_equity:
+    beta_prior: 1.0
+    cap: 0.60
+    w_max: 0.20
+    tickers: [SPY, QQQ, DIA, IWM, VTI, RSP, MDY]
+  sector_equity:
+    beta_prior: 1.0
+    cap: 0.40
+    w_max: 0.12
+    tickers: [XLB, XLE, XLF, XLI, XLK, XLP, XLU, XLV, XLY, XLRE, XLC]
+  factor_equity:
+    beta_prior: 0.9
+    cap: 0.40
+    w_max: 0.12
+    tickers: [MTUM, VLUE, QUAL, USMV, SPLV, VUG, VTV, IWF, IWD, SCHD, DVY]
+  intl_equity:
+    beta_prior: 0.9
+    cap: 0.30
+    w_max: 0.12
+    tickers: [EFA, VXUS, VEA, VWO, EEM, IEFA, EWJ]
+  treasury:
+    beta_prior: 0.0
+    cap: 0.60
+    w_max: 0.20
+    tickers: [BIL, SHY, SHV, IEI, IEF, TLT, GOVT, SGOV]
+  credit:
+    beta_prior: 0.3
+    cap: 0.25
+    w_max: 0.12
+    tickers: [LQD, HYG, JNK, VCIT, VCSH]
+  inflation_linked:
+    beta_prior: 0.1
+    cap: 0.20
+    w_max: 0.12
+    tickers: [TIP, VTIP, SCHP]
+  commodity:
+    beta_prior: 0.2
+    cap: 0.20
+    w_max: 0.10
+    tickers: [GLD, SLV, DBC, PDBC, USO, CPER, GDX, XME]
+  managed_futures:
+    beta_prior: 0.0
+    cap: 0.25
+    w_max: 0.10
+    tickers: [DBMF, KMLM, CTA, FMF, BTAL, TAIL, CAOS, PFIX]
+
+# cash residual lands here (beta ≈ 0; near-zero alpha assumption)
+cash_ticker: BIL
+
+eligibility:
+  min_history_sessions: 273      # 252d beta leg + 21d forward-residual headroom
+  min_dollar_vol_20d: 2.0e6

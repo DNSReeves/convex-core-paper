@@ -1,0 +1,305 @@
+{
+ "meta": {
+  "vintage": "w_equity=0.95",
+  "split": "2015-01-01",
+  "risk_free": "DGS3MO",
+  "note": "Regime layer = duration-sleeve mix + stress cap + regime-weighted tilt scoring. regime-off forces every day to RISK_NEUTRAL. Perturbations recomputed via the pure regime_series() over cached PIT inputs; scores recomputed per variant."
+ },
+ "regime_on": {
+  "label": "regime-on (live)",
+  "full": {
+   "cagr": 0.10677848205542095,
+   "vol": 0.1145371738943877,
+   "sortino": 1.0826049064279373,
+   "sharpe": 0.79089708112944,
+   "maxdd": -0.18004470853886145,
+   "calmar": 0.5930664828862412
+  },
+  "early": {
+   "cagr": 0.10604562755823199,
+   "vol": 0.11321380838037502,
+   "sortino": 1.204520665242535,
+   "sharpe": 0.8629314688375269,
+   "maxdd": -0.18004470853886145,
+   "calmar": 0.5889960800227725
+  },
+  "late": {
+   "cagr": 0.10740264795120269,
+   "vol": 0.11559687747716291,
+   "sortino": 0.9939711766880274,
+   "sharpe": 0.7363433070062756,
+   "maxdd": -0.1605785927099176,
+   "calmar": 0.6688478590992741
+  },
+  "regime_flips": 246,
+  "regime_dist": {
+   "RISK_NEUTRAL": 2985,
+   "RISK_ON": 1458,
+   "RECOVERY": 429,
+   "LIQUIDITY_STRESS": 165,
+   "RISK_OFF": 356
+  }
+ },
+ "regime_off": {
+  "label": "regime-off (all NEUTRAL)",
+  "full": {
+   "cagr": 0.10516348006534937,
+   "vol": 0.11364321729410456,
+   "sortino": 1.0623955688945557,
+   "sharpe": 0.7754262843673969,
+   "maxdd": -0.1921851687070616,
+   "calmar": 0.547198729084266
+  },
+  "early": {
+   "cagr": 0.09865047572283925,
+   "vol": 0.11328047894132096,
+   "sortino": 1.0926514606574127,
+   "sharpe": 0.7868228594651935,
+   "maxdd": -0.1921851687070616,
+   "calmar": 0.513309514914792
+  },
+  "late": {
+   "cagr": 0.11030933923114872,
+   "vol": 0.11396346460421643,
+   "sortino": 1.0404406075069719,
+   "sharpe": 0.7670136305683879,
+   "maxdd": -0.13676770449111275,
+   "calmar": 0.8065452267520998
+  },
+  "regime_flips": 0,
+  "regime_dist": {
+   "RISK_NEUTRAL": 5393
+  }
+ },
+ "hysteresis": {
+  "2": {
+   "label": "confirm_days=2",
+   "full": {
+    "cagr": 0.106090192582593,
+    "vol": 0.11457054380449391,
+    "sortino": 1.074436908745088,
+    "sharpe": 0.7851713302838114,
+    "maxdd": -0.18159719625445736,
+    "calmar": 0.5842061153517891
+   },
+   "early": {
+    "cagr": 0.10432485583858608,
+    "vol": 0.1134127290936279,
+    "sortino": 1.1791891775994436,
+    "sharpe": 0.8456784237190919,
+    "maxdd": -0.18159719625445736,
+    "calmar": 0.5744849479526334
+   },
+   "late": {
+    "cagr": 0.1075187461778393,
+    "vol": 0.1155037661195296,
+    "sortino": 0.9980743069344631,
+    "sharpe": 0.7392731129163381,
+    "maxdd": -0.1388381539137028,
+    "calmar": 0.7744178609913626
+   },
+   "regime_flips": 387,
+   "regime_dist": {
+    "RISK_NEUTRAL": 2995,
+    "RISK_ON": 1440,
+    "RECOVERY": 411,
+    "LIQUIDITY_STRESS": 190,
+    "RISK_OFF": 357
+   }
+  },
+  "3": {
+   "label": "confirm_days=3",
+   "full": {
+    "cagr": 0.10677848205542095,
+    "vol": 0.1145371738943877,
+    "sortino": 1.0826049064279373,
+    "sharpe": 0.79089708112944,
+    "maxdd": -0.18004470853886145,
+    "calmar": 0.5930664828862412
+   },
+   "early": {
+    "cagr": 0.10604562755823199,
+    "vol": 0.11321380838037502,
+    "sortino": 1.204520665242535,
+    "sharpe": 0.8629314688375269,
+    "maxdd": -0.18004470853886145,
+    "calmar": 0.5889960800227725
+   },
+   "late": {
+    "cagr": 0.10740264795120269,
+    "vol": 0.11559687747716291,
+    "sortino": 0.9939711766880274,
+    "sharpe": 0.7363433070062756,
+    "maxdd": -0.1605785927099176,
+    "calmar": 0.6688478590992741
+   },
+   "regime_flips": 246,
+   "regime_dist": {
+    "RISK_NEUTRAL": 2985,
+    "RISK_ON": 1458,
+    "RECOVERY": 429,
+    "LIQUIDITY_STRESS": 165,
+    "RISK_OFF": 356
+   }
+  },
+  "5": {
+   "label": "confirm_days=5",
+   "full": {
+    "cagr": 0.10779235655673691,
+    "vol": 0.11520660489484807,
+    "sortino": 1.0846152984904882,
+    "sharpe": 0.7921168424619618,
+    "maxdd": -0.1759655805424416,
+    "calmar": 0.6125763699039892
+   },
+   "early": {
+    "cagr": 0.10567640929280397,
+    "vol": 0.11445545353625788,
+    "sortino": 1.179751764236946,
+    "sharpe": 0.846005539711014,
+    "maxdd": -0.1759655805424416,
+    "calmar": 0.6005515906408504
+   },
+   "late": {
+    "cagr": 0.10949538658967928,
+    "vol": 0.11582799440504879,
+    "sortino": 1.0147250449004592,
+    "sharpe": 0.7509843604445356,
+    "maxdd": -0.1605785927099168,
+    "calmar": 0.6818803474475661
+   },
+   "regime_flips": 163,
+   "regime_dist": {
+    "RISK_NEUTRAL": 3112,
+    "RISK_ON": 1413,
+    "RECOVERY": 350,
+    "LIQUIDITY_STRESS": 133,
+    "RISK_OFF": 385
+   }
+  }
+ },
+ "thresholds": {
+  "0.8": {
+   "label": "thresholds x0.8",
+   "full": {
+    "cagr": 0.11256468934225028,
+    "vol": 0.11410148716375146,
+    "sortino": 1.153059856408308,
+    "sharpe": 0.8401387705562107,
+    "maxdd": -0.17985585580760532,
+    "calmar": 0.6258605750521825
+   },
+   "early": {
+    "cagr": 0.1074348445885589,
+    "vol": 0.11288844017839107,
+    "sortino": 1.2228996244629948,
+    "sharpe": 0.877183189303545,
+    "maxdd": -0.17985585580760532,
+    "calmar": 0.5973385971012457
+   },
+   "late": {
+    "cagr": 0.11662829494892346,
+    "vol": 0.11507636842229794,
+    "sortino": 1.102267110406879,
+    "sharpe": 0.8122188810845574,
+    "maxdd": -0.13883815391370258,
+    "calmar": 0.8400305799327751
+   },
+   "regime_flips": 210,
+   "regime_dist": {
+    "RISK_NEUTRAL": 3859,
+    "RISK_ON": 437,
+    "RECOVERY": 447,
+    "LIQUIDITY_STRESS": 247,
+    "RISK_OFF": 403
+   }
+  },
+  "1.0": {
+   "label": "thresholds x1.0",
+   "full": {
+    "cagr": 0.10677848205542095,
+    "vol": 0.1145371738943877,
+    "sortino": 1.0826049064279373,
+    "sharpe": 0.79089708112944,
+    "maxdd": -0.18004470853886145,
+    "calmar": 0.5930664828862412
+   },
+   "early": {
+    "cagr": 0.10604562755823199,
+    "vol": 0.11321380838037502,
+    "sortino": 1.204520665242535,
+    "sharpe": 0.8629314688375269,
+    "maxdd": -0.18004470853886145,
+    "calmar": 0.5889960800227725
+   },
+   "late": {
+    "cagr": 0.10740264795120269,
+    "vol": 0.11559687747716291,
+    "sortino": 0.9939711766880274,
+    "sharpe": 0.7363433070062756,
+    "maxdd": -0.1605785927099176,
+    "calmar": 0.6688478590992741
+   },
+   "regime_flips": 246,
+   "regime_dist": {
+    "RISK_NEUTRAL": 2985,
+    "RISK_ON": 1458,
+    "RECOVERY": 429,
+    "LIQUIDITY_STRESS": 165,
+    "RISK_OFF": 356
+   }
+  },
+  "1.2": {
+   "label": "thresholds x1.2",
+   "full": {
+    "cagr": 0.10977829412976225,
+    "vol": 0.1152292432496187,
+    "sortino": 1.109850536976596,
+    "sharpe": 0.8097369876085241,
+    "maxdd": -0.17954130563620918,
+    "calmar": 0.6114375393492884
+   },
+   "early": {
+    "cagr": 0.1117663204658852,
+    "vol": 0.11437123553278067,
+    "sortino": 1.2574567034172837,
+    "sharpe": 0.8989465359960398,
+    "maxdd": -0.17954130563620918,
+    "calmar": 0.6225103469635491
+   },
+   "late": {
+    "cagr": 0.10828967657111432,
+    "vol": 0.11593271868256458,
+    "sortino": 1.001535460083425,
+    "sharpe": 0.7415489823189627,
+    "maxdd": -0.16057859270991715,
+    "calmar": 0.6743718122299031
+   },
+   "regime_flips": 211,
+   "regime_dist": {
+    "RISK_NEUTRAL": 3103,
+    "RISK_ON": 1676,
+    "LIQUIDITY_STRESS": 75,
+    "RECOVERY": 325,
+    "RISK_OFF": 214
+   }
+  }
+ },
+ "layer_contribution": {
+  "full": {
+   "d_sortino": 0.02,
+   "d_cagr": 0.002,
+   "d_maxdd": 0.012
+  },
+  "early": {
+   "d_sortino": 0.112,
+   "d_maxdd": 0.012
+  },
+  "late": {
+   "d_sortino": -0.046,
+   "d_maxdd": -0.024
+  }
+ },
+ "sortino_spread_hysteresis": 0.01,
+ "sortino_spread_thresholds": 0.07
+}

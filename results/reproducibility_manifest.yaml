@@ -1,0 +1,24 @@
+report_name: DNSR Convex Core Publication Backtest
+run_for: 2026-06-14 publication revision
+dnsr_agent_commit: 6cd9baa
+model_curves_source: etf-trade-classifier/out/universe_refresh/model_curves.json
+benchmark_source: etf_data.db daily_prices.adjusted_close
+price_field: adjusted_close (total-return proxy; dividends reinvested)
+risk_free_series: DGS3MO
+cash_proxy: DGS3MO synthetic T-bill (daily compounding)
+span: 2006-02-07 .. 2026-06-10
+rebalance_primary: quarterly (drift between)
+rebalance_sensitivity: [monthly, annual]
+slippage_bps: 5.0   # identical for models AND benchmarks
+benchmarks: [SPY, 60/40 SPY/IEF, 60/40 SPY/AGG, 40/60 SPY/IEF, 80/20 SPY/IEF,
+             beta-matched SPY/T-bills (beta=0.42), vol-targeted SPY (target=0.1145)]
+significance: circular block bootstrap (L=21d, B=2000) on Sortino/Sharpe difference
+              vs SPY and vs 40/60 (Appendix E)
+convex_source_note: model_curves.json convex = w_equity 0.95 vintage (headline CAGR 10.8%);
+                    the instrumented engine (Tier-2) reproduces it at 10.7% (<0.1% path diff);
+                    workspace/strategy_portfolio/convex_daily_returns.csv (CAGR 8.4%) is a
+                    stale 0.65 export and is NOT used.
+llm_in_portfolio_math: false
+tier2_done: [per-sleeve crisis attribution, ablation/robustness grid, slippage sensitivity,
+             bootstrap significance test]
+still_planned: [Deflated Sharpe Ratio, PBO/CSCV, walk-forward re-validation of regime cutoffs]

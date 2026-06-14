@@ -1,0 +1,16 @@
+# IRA glidepath profile (operator-set 2026-06-11; → 0.90 on 2026-06-13; → 0.95 on 2026-06-14)
+# — overrides applied on top of the canonical V2 defaults by run_convex_weekly.py --profile.
+# 2026-06-14: operator raised w_equity 0.90 -> 0.95 (the practical ceiling — the vol-brake
+# binds beyond this). Backtest 0.95 vs 0.90: CAGR 10.3->10.7%, Sortino FLAT 1.08->1.07
+# (no risk-adjusted penalty at the top), maxDD -17->-18%, GFC -10.4->-11.5%, beta 0.39->0.42.
+# Still crushes SPY risk-adjusted (Sortino 1.07 vs 0.72; maxDD -18% vs -55%). A clean
+# return-for-drawdown trade. Step DOWN toward 0.65 as drawdown years approach (glidepath).
+#
+# Glidepath intent (IRA_MODEL_GUIDE.md §5): hold higher equity while the
+# horizon is 10+ years; step toward the 0.65 default as drawdown years
+# approach. Edit w_equity here when stepping down — one number, no code.
+# Estimated trade-off (from the 5-dim search surface): each +0.05 of
+# w_equity ≈ +0.2-0.3%/yr CAGR and ~1.5-2 points of MaxDD.
+name: ira_glidepath
+overrides:
+  w_equity: 0.95

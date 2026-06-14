@@ -1,0 +1,84 @@
+# Convex Core — Reproducibility Companion
+
+Companion code and data artifacts for the research report
+**“Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework
+for Drawdown-Controlled Compounding”** ([`paper/`](paper/)).
+
+**Principal:** David Reeves, DNSR Investments, LLC — https://www.linkedin.com/in/david-reeves-8a664524
+**Research system:** the DNSR Agentic AI pipeline (with Anthropic Fable 5 and Opus 4.8),
+directed and reviewed by the principal, who is responsible for its use.
+
+> **Not investment advice.** All performance herein is *hypothetical, backtested*,
+> net of modeled costs. Past performance does not guarantee future results. See the
+> paper’s §15 (Limitations) and Disclaimer.
+
+---
+
+## Why this repo exists
+
+The paper’s central claim is methodological: a deterministic, auditable, reproducible
+allocation model, validated with pre-registered tests and *published negative results*.
+This repository exists so a third party can **inspect and re-run the method** rather than
+take the numbers on faith. It contains the model engine, the benchmark/report code, the
+computed result artifacts, and the tests — everything except the licensed vendor data
+(see [Data](#data)).
+
+## What’s included
+
+| Path | Contents |
+|---|---|
+| `paper/` | The report (PDF + self-contained HTML). |
+| `engine/tradeclassifier/` | The deterministic model engine — `convex_core.py` (the flagship) and the shared point-in-time alpha/beta/regime panel it depends on (`alpha_backtest`, `alpha`, `beta`, `features`, `optimizer`, `loaders`, `objective`, `regime`, `config`). **Zero fitted parameters; no LLM in the allocation math.** |
+| `config/` | Model + regime configuration (`regime_rules.yaml`, `ira_profile.yaml`, etc.). The regime clause set is reproduced verbatim in the paper’s Appendix I. |
+| `report/` | `pub_benchmarks.py` (benchmark construction + metrics + bootstrap significance), `build_pub_report.py` (assembles the paper), `run_tier2.py` (sleeve ablations + crisis attribution), `run_regime_wf.py` (regime walk-forward validation). |
+| `results/` | Computed **model outputs** (not raw vendor data): `model_curves.json` (growth-of-$1 per model), `benchmarks.json`, `tier2.json`, `regime_wf.json`, `reproducibility_manifest.yaml`. These reproduce the paper’s tables/figures directly. |
+| `tests/` | `test_convex_core.py` — engine pins (vol brake, PIT fold, determinism, attribution non-invasiveness). |
+
+## Data
+
+The model is built from a local warehouse of daily ETF OHLCV and macro series sourced
+from **EODHD, FMP, and FRED**. That data is **licensed and is not redistributed here.**
+To rebuild it from your own vendor keys, see [`data/README.md`](data/README.md) for the
+schema and the series list. The `results/*.json` artifacts let you reproduce every table
+and figure in the paper **without** the raw data; the full engine run requires rebuilding
+the warehouse.
+
+## Reproducing the paper
+
+```bash
+pip install -r requirements.txt
+export PAPER_ROOT=$(pwd)         # the report/research scripts read paths from this
+# tables & figures from shipped artifacts:
+python report/build_pub_report.py
+# full engine re-run (requires a rebuilt data/etf_data.db):
+python report/pub_benchmarks.py
+python report/run_tier2.py
+python report/run_regime_wf.py
+pytest tests/
+```
+
+> **Note on portability.** These scripts were extracted from a larger private system; file
+> paths are parameterized via `PAPER_ROOT`. They are provided primarily so the **method is
+> auditable**. The canonical run environment is the author’s; minor path configuration may
+> be needed to run end-to-end against a freshly rebuilt warehouse.
+
+## Honest scope (read this)
+
+This work claims **no novel strategy or anomaly.** Convex Core is a synthesis of
+well-published premia — volatility-managed equity (Moreira & Muir 2017), crisis-alpha /
+trend-following (Hurst, Ooi & Pedersen 2017), and defensive / betting-against-beta
+(Frazzini & Pedersen 2014). The negative results corroborate the anomaly-replication
+literature (Hou, Xue & Zhang 2020; McLean & Pontiff 2016). The contribution is
+**integrative and methodological**: negative-results discipline, end-to-end determinism
+and reproducibility, significance-tested and honestly-calibrated claims, and an
+AI-conducted, pre-registered research process. See the paper’s §3.1.
+
+## Citation
+
+> Reeves, D. (DNSR Investments, LLC), with the DNSR Agentic AI system (Anthropic Fable 5 /
+> Opus 4.8). *Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework
+> for Drawdown-Controlled Compounding.* 2026.
+
+## License
+
+See [`LICENSE`](LICENSE). _(License choice pending — see the note in that file.)_

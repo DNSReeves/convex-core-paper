@@ -1,0 +1,8 @@
+*.db
+*.sqlite*
+.env
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+data/etf_data.db

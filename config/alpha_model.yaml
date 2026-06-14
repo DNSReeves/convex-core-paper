@@ -1,0 +1,48 @@
+# Max-alpha-at-target-beta model — v1 parameters (design spec §8-§10).
+# Everything here is data, not code (the THRESHOLDS/tables pattern); regime weight
+# templates are the §15.1-searchable surface for the Phase-B walk-forward.
+
+# The 8 continuous alpha features (z-ranked within-date across the universe):
+#   mom_12_1          12-1 month momentum
+#   vol_adj_mom_63    63d return / 63d realized vol
+#   rs_63             63d excess return vs benchmark
+#   ma_dist_200       close / SMA200 - 1
+#   rolling_alpha_252 annualized mean daily CAPM residual
+#   down_capture_inv  1 - downside capture (higher = better crash behavior)
+#   dd_improve        63d drawdown now vs 21 sessions ago (recovery)
+#   rsi_centered      RSI14 - 50 (technical confirmation)
+
+regime_weight_templates:
+  RISK_ON:          {mom_12_1: 0.2375, vol_adj_mom_63: 0.19, rs_63: 0.19, ma_dist_200: 0.1425, rolling_alpha_252: 0.095, down_capture_inv: 0.0, dd_improve: 0.0475, rsi_centered: 0.0475, val_5y: 0.05}
+  RISK_NEUTRAL:     {mom_12_1: 0.162, vol_adj_mom_63: 0.135, rs_63: 0.135, ma_dist_200: 0.09, rolling_alpha_252: 0.153, down_capture_inv: 0.09, dd_improve: 0.09, rsi_centered: 0.045, val_5y: 0.1}
+  RECOVERY:         {mom_12_1: 0.072, vol_adj_mom_63: 0.108, rs_63: 0.18, ma_dist_200: 0.045, rolling_alpha_252: 0.09, down_capture_inv: 0.09, dd_improve: 0.27, rsi_centered: 0.045, val_5y: 0.1}
+  RISK_OFF:         {mom_12_1: 0.09, vol_adj_mom_63: 0.09, rs_63: 0.09, ma_dist_200: 0.045, rolling_alpha_252: 0.27, down_capture_inv: 0.27, dd_improve: 0.045, rsi_centered: 0.0, val_5y: 0.1}
+  LIQUIDITY_STRESS: {mom_12_1: 0.045, vol_adj_mom_63: 0.09, rs_63: 0.09, ma_dist_200: 0.0, rolling_alpha_252: 0.27, down_capture_inv: 0.36, dd_improve: 0.045, rsi_centered: 0.0, val_5y: 0.1}
+
+beta:
+  raw_blend: {short_window: 63, long_window: 252, short_weight: 0.5}
+  shrink_mode: adaptive          # Phase C: Vasicek — weight = se²/(se²+τ²);
+  tau: 0.25                      # well-estimated daily betas barely shrink
+  shrink_to_prior: 0.30          # fixed-mode fallback only (Phase A/B legacy)
+  stress:
+    bench_ret_threshold: -0.01   # SPY <= -1% days (the crisis-alpha population)
+    window_sessions: 504         # trailing 2y
+    min_stress_days: 15          # fewer -> stress beta None (degraded, reported)
+  band_halfwidth: 0.05           # portfolio band = target ± this
+  stress_band_excess: 0.15       # portfolio stress beta <= target + this
+
+optimizer:                        # greedy rank-and-risk (v1)
+  beta_aim_frac: 0.50             # work-to point inside the band: lo + frac*(hi-lo).
+                                  # Calibrated 2026-06-11: measured betas regress ~0.13
+                                  # by realization, so aiming the midpoint keeps realized
+                                  # beta in-band (0.25 dropped moderate below its floor).
+  max_names: 25
+  min_position: 0.01
+  min_trade: 0.005               # turnover governor: skip |dw| below this
+  z_clip: 3.0
+
+display:
+  # score -> 0-100 display mapping only; expected-alpha bps requires the Phase-B
+  # per-fold calibration and is NOT printed in Phase A (omit-never-fabricate)
+  score_center: 50.0
+  score_scale: 16.7

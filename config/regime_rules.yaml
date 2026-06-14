@@ -1,0 +1,74 @@
+# A4 regime engine rules — conditions grounded in base spec §9.2 (2026-06-10;
+# replaces the pre-base-spec PROVISIONAL set). Structure per the addendum:
+# fixed primary precedence (stress wins), orthogonal tags, hysteresis in code.
+#
+# Where §9.2 is qualitative ("rising", "strongly", "not extreme") the numeric
+# calibration below is an interpretation — those numbers are in the §15.1
+# walk-forward-optimizable family ("regime thresholds") and may be tuned;
+# tests pin the evaluation SEMANTICS, not these calibrations.
+#
+# Inputs come from regime.py::build_inputs (all Tier-P PIT). A clause whose
+# input is unavailable degrades (dropped); a primary state needs
+# min_live_clauses live clauses to be eligible; a tag with ANY blind clause
+# stays off.
+
+primary:
+  precedence: [LIQUIDITY_STRESS, RISK_OFF, RECOVERY, RISK_ON, RISK_NEUTRAL]
+  min_live_clauses: 3
+  states:
+    LIQUIDITY_STRESS:   # §9.2: VIX rising sharply, credit widening, HYG<LQD, SPY under MAs
+      all:
+        - "vix_chg_20d > 5.0"
+        - "vix_pctile_252d >= 0.80"
+        - "hyg_lqd_rs_20d < -0.02"
+        - "spy_below_sma50_or_200 == True"
+    RISK_OFF:           # §9.2: SPY<SMA200, SMA50<SMA200, VIX>70th pctile, HYG/LQD falling
+      all:
+        - "spy_above_200dma == False"
+        - "spy_sma50_above_sma200 == False"
+        - "vix_pctile_252d >= 0.70"
+        - "hyg_lqd_rs_63d < 0.0"
+    RECOVERY:           # §9.2: recently below MAs, reclaiming, VIX falling from elevated, HYG stabilizing
+      all:
+        - "spy_below_sma_within_20d == True"
+        - "spy_reclaimed_sma20_or_50 == True"
+        - "vix_chg_20d < 0.0"
+        - "vix_pctile_252d >= 0.50"
+        - "hyg_lqd_rs_20d > -0.01"
+    RISK_ON:            # §9.2: SPY>SMA200, SMA50>SMA200, 63d ret>0, VIX<median, HYG/LQD rising, breadth positive
+      all:
+        - "spy_above_200dma == True"
+        - "spy_sma50_above_sma200 == True"
+        - "spy_ret_63d > 0.0"
+        - "vix_vs_median_252d < 1.0"
+        - "hyg_lqd_rs_63d > 0.0"
+        - "breadth_pct_above_200dma > 50.0"
+    RISK_NEUTRAL:       # §9.2: mixed signals — the residual
+      residual: true
+
+tags:
+  DEFENSIVE_ROTATION:   # §9.2: XLU/XLP/XLV outperforming, SPY weakening, VIX rising not extreme
+    all:
+      - "def_spy_rs_63d > 0.01"
+      - "spy_ret_63d < 0.02"
+      - "vix_chg_20d > 0.0"
+      - "vix_pctile_252d < 0.85"
+  INFLATION_STRESS:     # §9.2: energy/materials outperform, long bonds weak, breakevens rising
+    all:
+      - "xle_xlb_spy_rs_63d > 0.02"
+      - "tlt_ret_63d < -0.02"
+      - "breakeven_chg_20d > 0.0"
+  DURATION_RALLY:       # §9.2: TLT+IEF improving, yields falling
+    all:
+      - "tlt_ret_63d > 0.03"
+      - "ief_ret_63d > 0.01"
+      - "dgs10_chg_20d < 0.0"
+  DOLLAR_STRESS:        # §9.2: UUP rising strongly, international lagging
+    all:
+      - "uup_ret_63d > 0.04"
+      - "vxus_spy_rs_63d < -0.01"
+  COMMODITY_STRENGTH:   # §9.2: commodities/energy improving, long duration lagging
+    all:
+      - "dbc_ret_63d > 0.03"
+      - "xle_xlb_spy_rs_63d > 0.0"
+      - "tlt_ret_63d < 0.02"
