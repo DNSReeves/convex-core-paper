@@ -12,23 +12,27 @@ Output: ~/DNSR_Convex_Core_Publication_2026-06-14.html
 """
 from __future__ import annotations
 import base64, io, json
+import os as _os
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-ROOT = "${PAPER_ROOT}"
-BJSON = f"{ROOT}/dnsr-agent/workspace/pub_report/benchmarks.json"
-MANIFEST = f"{ROOT}/dnsr-agent/workspace/pub_report/reproducibility_manifest.yaml"
-OUT = "${HOME}/DNSR_Convex_Core_Publication_2026-06-14.html"
+# Companion-repo layout: this script lives in report/; inputs ship under
+# results/ and config/. Resolve everything relative to the repo root so a
+# cloner can regenerate the paper from the shipped artifacts (no env needed).
+REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+RESULTS = _os.path.join(REPO, "results")
+BJSON = _os.path.join(RESULTS, "benchmarks.json")
+MANIFEST = _os.path.join(RESULTS, "reproducibility_manifest.yaml")
+OUT = _os.path.join(REPO, "paper", "DNSR_Convex_Core_Publication_REGENERATED.html")
 REPO_URL = "https://github.com/DNSReeves/convex-core-paper"
 
 B = json.load(open(BJSON))
 MAN = open(MANIFEST).read()
 MET = B["benchmarks"]; MODELS = B["models"]
-import os as _os
-T2JSON = f"{ROOT}/dnsr-agent/workspace/pub_report/tier2.json"
+T2JSON = _os.path.join(RESULTS, "tier2.json")
 T2 = json.load(open(T2JSON)) if _os.path.exists(T2JSON) else None
-RWFJSON = f"{ROOT}/dnsr-agent/workspace/pub_report/regime_wf.json"
+RWFJSON = _os.path.join(RESULTS, "regime_wf.json")
 RWF = json.load(open(RWFJSON)) if _os.path.exists(RWFJSON) else None
 plt.rcParams.update({"font.size": 10, "axes.grid": True, "grid.alpha": .25,
                      "axes.edgecolor": "#888", "figure.facecolor": "white"})
@@ -250,7 +254,7 @@ HAS_T2 = T2 is not None
 
 # ---- regime rules (exact, from config/regime_rules.yaml) ------------------
 import yaml as _yaml
-RULES_YAML = f"{ROOT}/etf-trade-classifier/config/regime_rules.yaml"
+RULES_YAML = _os.path.join(REPO, "config", "regime_rules.yaml")
 _RR = _yaml.safe_load(open(RULES_YAML)) if _os.path.exists(RULES_YAML) else None
 CONFIRM_DAYS = 3
 
@@ -388,10 +392,10 @@ P.append(f"""
   <tr><td style="text-align:left">S&amp;P 500 (SPY)</td><td>{SP['cagr']*100:.1f}%</td><td>{SP['sortino']:.2f}</td><td>{SP['maxdd']*100:.0f}%</td><td>{SP['calmar']:.2f}</td><td>1.00</td></tr>
  </table>
  <div class="fs-two">
-  <div><h4>Supported result</h4>Risk-managed compounding — higher Sharpe / Sortino / Calmar and roughly one-third the index's maximum drawdown. The risk-adjusted edge is <i>statistically significant versus the S&amp;P 500</i> (bootstrap, §8.1) and at least comparable to balanced, beta-matched, and volatility-targeted alternatives <i>at materially higher absolute return</i>. Fully deterministic; no large-language model participates in portfolio construction.</div>
+  <div><h4>Supported result</h4>Risk-managed compounding — higher Sharpe / Sortino / Calmar and roughly one-third the index's maximum drawdown. Bootstrap evidence supports a <i>Sharpe</i> improvement versus SPY, while the <i>Sortino</i> improvement is positive but borderline (§8.1); Convex Core is <i>not</i> statistically separable from the strongest balanced benchmark (40/60) on risk-adjusted ratios. Its stronger claim is <i>comparable downside-risk-adjusted performance at materially higher return and lower drawdown.</i> Fully deterministic; no large-language model participates in portfolio construction.</div>
   <div><h4>Failed pre-registered experiments</h4>Five independently designed experiments — an ML cross-sectional ranker, an ML volatility forecaster, trend-clarity features, multi-strategy blending, and universe modernization — each failed its pre-specified baseline. No robust return-prediction edge was found on these liquid-ETF data.</div>
  </div>
- <div class="fs-foot">Hypothetical, backtested performance, net of modeled costs; risk-free = 90-day U.S. Treasury bill (DGS3MO). <b>Not investment advice.</b> See §15 Limitations and the Disclaimer. © 2026 DNSR Investments LLC.</div>
+ <div class="fs-foot"><b>This is a practitioner research paper, not evidence of live audited performance.</b> Hypothetical, backtested performance, net of modeled costs; risk-free = 90-day U.S. Treasury bill (DGS3MO). <b>Not investment advice.</b> See §15 Limitations and the Disclaimer. © 2026 DNSR Investments, LLC.</div>
 </div>
 <div style="page-break-after:always"></div>
 """)
@@ -640,7 +644,7 @@ P.append("""
 """)
 
 # ---- 14 Suitability -------------------------------------------------------
-P.append("""
+P.append(f"""
 <h2>14. Suitability and Implementation Considerations</h2>
 <p><b>Suitability.</b> Convex Core is most relevant for investors who value drawdown control, downside-risk-adjusted compounding, and sequence-risk resilience. It may be less appropriate for investors whose sole objective is maximum long-run CAGR and who can tolerate large interim drawdowns without changing behavior or spending plans.</p>
 <table>

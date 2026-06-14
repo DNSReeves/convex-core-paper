@@ -47,20 +47,29 @@ the warehouse.
 
 ```bash
 pip install -r requirements.txt
-export PAPER_ROOT=$(pwd)         # the report/research scripts read paths from this
-# tables & figures from shipped artifacts:
+
+# (1) Regenerate the paper (all tables + figures) from the shipped result
+#     artifacts — NO vendor data required. Self-resolves against results/.
+#     Verified: reproduces the distributed paper. Output:
+#       paper/DNSR_Convex_Core_Publication_REGENERATED.html
 python report/build_pub_report.py
-# full engine re-run (requires a rebuilt data/etf_data.db):
-python report/pub_benchmarks.py
-python report/run_tier2.py
-python report/run_regime_wf.py
-pytest tests/
+
+# (2) Run the engine unit tests (synthetic data, no warehouse needed):
+PYTHONPATH=engine pytest tests/
+
+# (3) Full engine re-run from scratch — REQUIRES a rebuilt data/etf_data.db
+#     (see data/README.md). These scripts read paths via the PAPER_ROOT env var:
+export PAPER_ROOT=$(pwd)
+python report/pub_benchmarks.py   # rebuilds results/benchmarks.json (+ bootstrap)
+python report/run_tier2.py        # sleeve ablations + crisis attribution
+python report/run_regime_wf.py    # regime walk-forward validation
 ```
 
-> **Note on portability.** These scripts were extracted from a larger private system; file
-> paths are parameterized via `PAPER_ROOT`. They are provided primarily so the **method is
-> auditable**. The canonical run environment is the author’s; minor path configuration may
-> be needed to run end-to-end against a freshly rebuilt warehouse.
+> **Reproducibility status.** Step (1) is self-contained and has been verified to regenerate
+> the paper from the shipped `results/*.json` artifacts. Steps (3) reproduce those artifacts
+> from a rebuilt warehouse; they were extracted from a larger private system and read paths
+> via `PAPER_ROOT`. The PDF is produced from the HTML with a headless browser (e.g.
+> Playwright/Chromium).
 
 ## Honest scope (read this)
 

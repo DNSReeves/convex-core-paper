@@ -7,3 +7,6 @@ __pycache__/
 .venv/
 data/etf_data.db
 .pytest_cache/
+
+# regeneration/verification output
+paper/*_REGENERATED.html
