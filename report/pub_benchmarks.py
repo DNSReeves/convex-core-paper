@@ -312,8 +312,10 @@ def build():
         convex_vs_best_balanced=bootstrap_diff(conv_ret, b4060_ret, rf),
         best_balanced_label="40/60 SPY/IEF (Q)")
 
-    # Monte Carlo (paired block bootstrap) — Convex vs 60/40 SPY/IEF
+    # Monte Carlo (paired block bootstrap) — Convex vs 60/40 and vs 40/60 (the
+    # strongest balanced competitor on risk-adjusted ratios)
     monte_carlo = mc_vs_benchmark(conv_ret, b6040_ret)
+    monte_carlo_4060 = mc_vs_benchmark(conv_ret, b4060_ret)
 
     # downsampled growth curves for charts (monthly)
     def ds(g):
@@ -349,6 +351,7 @@ def build():
         corr_spy_full=corr_spy_full,
         significance=significance,
         monte_carlo=monte_carlo,
+        monte_carlo_4060=monte_carlo_4060,
         rolling_corr_spy=rc_spy,
         rolling_corr_6040=rc_6040,
         chart_curves=chart_curves,

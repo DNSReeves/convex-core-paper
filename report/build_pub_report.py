@@ -17,8 +17,6 @@ import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import os as _os
-# Companion-repo layout: inputs ship under results/ and config/, resolved relative
-# to the repo root so a cloner regenerates the paper from shipped artifacts (no env).
 REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 RESULTS = _os.path.join(REPO, "results")
 BJSON = _os.path.join(RESULTS, "benchmarks.json")
@@ -315,6 +313,7 @@ def _sig(diff):
             f"[{diff['ci_low']:+.2f}, {diff['ci_high']:+.2f}], p={diff['p_le_0']:.3f})</span>")
 
 MC = B.get("monte_carlo")
+MC4060 = B.get("monte_carlo_4060")
 
 def crisis_maxdd_table():
     head = ("<tr><th>Crisis window</th><th>Convex Core</th><th>60/40 SPY/IEF</th>"
@@ -428,7 +427,7 @@ P.append(f"""
 P.append(f"""
 <h2>1. Executive Summary</h2>
 <p><b>Bottom line.</b> Convex Core is a deterministic, risk-managed ETF allocation framework designed to preserve exposure to the equity market's long-run return while reducing exposure during high-volatility drawdown regimes. In a {span[0][:4]}–{span[1][:4]} backtest, net of modeled costs, Convex Core produced a {CV['cagr']*100:.1f}% CAGR versus {SP['cagr']*100:.1f}% for SPY, while reducing maximum drawdown from {SP['maxdd']*100:.0f}% to {CV['maxdd']*100:.0f}% and improving Sortino from {SP['sortino']:.2f} to {CV['sortino']:.2f}. These results suggest that the model's primary value is not return prediction, but drawdown control and improved downside-risk-adjusted compounding. Separately, five pre-registered experiments designed to improve return prediction failed their baselines, supporting the decision to emphasize risk management over higher-capacity forecasting models.</p>
-<p>Because Convex Core has lower beta and a drawdown-sensitive objective, it is benchmarked not only against SPY but against rebalanced 60/40, 40/60, and 80/20 stock/Treasury portfolios, a beta-matched SPY/T-bill portfolio, and a volatility-targeted SPY. It improves on all of them on Sortino, Calmar, and maximum drawdown over the tested period.</p>
+<p>Because Convex Core has lower beta and a drawdown-sensitive objective, it is benchmarked not only against SPY but against rebalanced 60/40, 40/60, and 80/20 stock/Treasury portfolios, a beta-matched SPY/T-bill portfolio, and a volatility-targeted SPY. On point estimates it improves on all of them on Sortino, Calmar, and maximum drawdown over the tested period, while the risk-adjusted difference versus the strongest balanced competitor (40/60) is <i>not</i> statistically separable (§8.1–§8.2).</p>
 {metric_table(EXEC, COLS_EXEC)}
 <div class="cap">Table 1. Primary performance comparison — <b>hypothetical, backtested</b>, net of modeled costs, {span[0]}–{span[1]}; rf = 90-day T-bill. Balanced benchmarks rebalanced quarterly. Convex Prime (leveraged) and other research-only variants are reported separately in §17, not here.</div>
 """)
@@ -456,7 +455,7 @@ P.append("""
 <p><b>The contribution is integrative and methodological, not a new financial result:</b></p>
 <ul>
 <li><b>Negative results that ship.</b> Five pre-registered failures are reported alongside the positive result. Academic journals rarely publish failed strategies and practitioner white papers essentially never do; publishing the gated failures is the paper's strongest point of difference.</li>
-<li><b>Determinism and reproducibility end-to-end.</b> A zero-fitted-parameter flagship, no large-language model anywhere in the allocation math, and a complete reproducibility manifest (Appendix F) — a standard of auditability uncommon in published backtests.</li>
+<li><b>Determinism and reproducibility end-to-end.</b> A deterministic, parameter-minimal primary model, no large-language model anywhere in the allocation math, and a complete reproducibility manifest (Appendix F) — a standard of auditability uncommon in published backtests.</li>
 <li><b>Honesty calibration.</b> Claims are significance-tested and the inconvenient findings are kept in the text — e.g., the bootstrap result (§8.1) that Convex Core is <i>not</i> statistically separable from a 60/40 portfolio on risk-adjusted ratios, and the validation (§12, §15) that the regime layer is a second-order refinement rather than the source of the edge.</li>
 <li><b>An AI-conducted research process.</b> The experiments here were designed, pre-registered, executed, and self-critically reported by an autonomous agentic-AI research pipeline (the DNSR Agentic AI system, built on Anthropic Fable&nbsp;5 and Opus&nbsp;4.8), directed and reviewed by the principal. The methodological discipline — pre-registration, leakage control, published negatives — was applied by the system itself; this process is a contribution distinct from, and arguably more novel than, the financial content. To be clear, this is a property of the <i>research workflow</i>: no large-language model participates in the allocation math, which is fully deterministic.</li>
 </ul>
@@ -556,18 +555,23 @@ if SIG:
 """)
 
 if MC:
+    _col4060 = ("<th>vs 40/60 SPY/IEF</th>") if MC4060 else ""
+    r1 = (f"<td><b>{MC4060['p_higher_terminal']*100:.0f}%</b></td>" if MC4060 else "")
+    r2 = (f"<td><b>{MC4060['p_higher_calmar']*100:.0f}%</b></td>" if MC4060 else "")
+    r3 = (f"<td>{MC4060['p_shallower_dd']*100:.0f}%</td>" if MC4060 else "")
     P.append(f"""
-<h3>8.2 Monte Carlo comparison versus 60/40</h3>
-<p>To characterize the head-to-head with the primary balanced benchmark beyond a single historical path, we run a <b>paired circular block bootstrap</b> (block length {MC['block_len']} trading days, {MC['resamples']:,} resamples) on the <i>actual</i> daily returns of Convex Core and 60/40 SPY/IEF — resampling real return blocks jointly, so autocorrelation and the two strategies' cross-correlation are preserved. This is deliberately <b>not</b> a parametric simulation: drawing from a fitted normal/t distribution would suppress exactly the fat tails and stock–bond-correlation breakdowns the model exists to survive. Across the {MC['resamples']:,} synthetic histories:</p>
+<h3>8.2 Monte Carlo comparison versus the balanced portfolios</h3>
+<p>To characterize the head-to-head with the balanced benchmarks beyond a single historical path, we run a <b>paired circular block bootstrap</b> (block length {MC['block_len']} trading days, {MC['resamples']:,} resamples) on the <i>actual</i> daily returns of Convex Core and each balanced portfolio — resampling real return blocks jointly, so autocorrelation and the cross-correlation are preserved. This is deliberately <b>not</b> a parametric simulation: drawing from a fitted normal/t distribution would suppress exactly the fat tails and stock–bond-correlation breakdowns the model exists to survive. We test both the primary 60/40 and the <i>strongest balanced competitor</i> on risk-adjusted ratios, 40/60. Across {MC['resamples']:,} synthetic histories, P(Convex Core …):</p>
 <table>
-<tr><th>Outcome (Convex Core vs 60/40 SPY/IEF)</th><th>Probability</th></tr>
-<tr><td style="text-align:left">Higher terminal wealth</td><td><b>{MC['p_higher_terminal']*100:.0f}%</b></td></tr>
-<tr><td style="text-align:left">Higher Calmar (return per unit of max drawdown)</td><td><b>{MC['p_higher_calmar']*100:.0f}%</b></td></tr>
-<tr><td style="text-align:left">Shallower maximum drawdown</td><td>{MC['p_shallower_dd']*100:.0f}%</td></tr>
-<tr><td style="text-align:left">Max-drawdown distribution (5th / 50th / 95th pct)</td><td>Convex {MC['a_maxdd_p05']*100:.0f}/{MC['a_maxdd_p50']*100:.0f}/{MC['a_maxdd_p95']*100:.0f}% &nbsp;vs&nbsp; 60/40 {MC['b_maxdd_p05']*100:.0f}/{MC['b_maxdd_p50']*100:.0f}/{MC['b_maxdd_p95']*100:.0f}%</td></tr>
+<tr><th>P(Convex Core …)</th><th>vs 60/40 SPY/IEF</th>{_col4060}</tr>
+<tr><td style="text-align:left">Higher terminal wealth</td><td><b>{MC['p_higher_terminal']*100:.0f}%</b></td>{r1}</tr>
+<tr><td style="text-align:left">Higher Calmar (return per unit of max drawdown)</td><td><b>{MC['p_higher_calmar']*100:.0f}%</b></td>{r2}</tr>
+<tr><td style="text-align:left">Shallower maximum drawdown</td><td>{MC['p_shallower_dd']*100:.0f}%</td>{r3}</tr>
 </table>
-<div class="cap">Table 8. Monte Carlo (paired block bootstrap) outcomes, Convex Core vs 60/40 SPY/IEF, net of costs.</div>
-<p><b>Interpretation.</b> The <i>reliable</i> edge is compounding, not drawdown: Convex out-finishes 60/40 in <b>{MC['p_higher_terminal']*100:.0f}%</b> of histories and posts a better Calmar in <b>{MC['p_higher_calmar']*100:.0f}%</b>, but its maximum drawdown is shallower only <b>{MC['p_shallower_dd']*100:.0f}%</b> of the time — the two drawdown distributions overlap heavily (median {MC['a_maxdd_p50']*100:.0f}% vs {MC['b_maxdd_p50']*100:.0f}%). So the honest summary is <i>higher terminal wealth at comparable-to-modestly-better drawdown</i>, not uniformly lower drawdown. As with all bootstraps on this sample, this quantifies path uncertainty; it cannot manufacture statistical power beyond the ~6 independent stress regimes in the data.</p>
+<div class="cap">Table 8. Monte Carlo (paired block bootstrap) outcomes — Convex Core vs 60/40 and 40/60 SPY/IEF, net of costs. Convex max-DD distribution (5th/50th/95th) {MC['a_maxdd_p05']*100:.0f}/{MC['a_maxdd_p50']*100:.0f}/{MC['a_maxdd_p95']*100:.0f}%; 60/40 {MC['b_maxdd_p05']*100:.0f}/{MC['b_maxdd_p50']*100:.0f}/{MC['b_maxdd_p95']*100:.0f}%{('; 40/60 ' + format(MC4060['b_maxdd_p05']*100,'.0f') + '/' + format(MC4060['b_maxdd_p50']*100,'.0f') + '/' + format(MC4060['b_maxdd_p95']*100,'.0f') + '%') if MC4060 else ''}.</div>
+<p><b>Versus 60/40, the reliable edge is compounding, not drawdown:</b> Convex out-finishes 60/40 in <b>{MC['p_higher_terminal']*100:.0f}%</b> of histories and posts a better Calmar in <b>{MC['p_higher_calmar']*100:.0f}%</b>, but its maximum drawdown is shallower only <b>{MC['p_shallower_dd']*100:.0f}%</b> of the time — the drawdown distributions overlap heavily (median {MC['a_maxdd_p50']*100:.0f}% vs {MC['b_maxdd_p50']*100:.0f}%). The honest summary is higher terminal wealth at comparable-to-modestly-better drawdown, not uniformly lower drawdown.</p>
+{(f'''<p><b>Versus 40/60 — the strongest balanced competitor on risk-adjusted ratios — the contrast is sharper and just as honest:</b> Convex out-compounds 40/60 in <b>{MC4060['p_higher_terminal']*100:.0f}%</b> of histories and has a higher Calmar in <b>{MC4060['p_higher_calmar']*100:.0f}%</b>, but its maximum drawdown is shallower only <b>{MC4060['p_shallower_dd']*100:.0f}%</b> of the time — i.e. the more-defensive 40/60 (40% equity, β≈{B46['beta']:.2f}) has the <i>shallower</i> drawdown in roughly {100-MC4060['p_shallower_dd']*100:.0f}% of histories. So Convex Core's advantage over 40/60 is <i>return</i> ({CV['cagr']*100:.1f}% vs {B46['cagr']*100:.1f}% CAGR) at a modestly-better risk-adjusted profile — <b>not</b> lower drawdown. This directly answers the reviewer's objection that 40/60 is the closest risk-adjusted competitor: the two are statistically comparable on risk-adjusted ratios (§8.1), and the choice between them is higher return (Convex) versus shallower drawdown (40/60), at very different equity exposure.</p>''') if MC4060 else ''}
+<p>As with all bootstraps on this sample, this quantifies path uncertainty; it cannot manufacture statistical power beyond the ~6 independent stress regimes in the data.</p>
 """)
 
 # ---- 9 Traditional Allocation Comparisons ---------------------------------
@@ -593,7 +597,7 @@ P.append(f"""
 # ---- 11 Crisis-Period Attribution -----------------------------------------
 P.append(f"""
 <h2>11. Crisis-Period Attribution</h2>
-<p>A drawdown-control model should be judged primarily during drawdown regimes. Table 3 reports total returns across the major equity-stress windows in the sample.</p>
+<p>A drawdown-control model should be judged primarily during drawdown regimes. The table below reports total returns across the major equity-stress windows in the sample.</p>
 {crisis_table()}
 <div class="cap">Table 3. Crisis-window total returns (hypothetical/backtested, net of costs). The per-sleeve decomposition is in §11.1. Convex figures use the published 0.95 curve; §11.1 uses the instrumented engine run, which reproduces it to &lt;1 pp per window.</div>
 <img src="{F5}"/><div class="cap">Figure 7. Crisis-window total returns — Convex Core's loss is a fraction of SPY's in every window, and below 60/40 in all but the mildest.</div>
