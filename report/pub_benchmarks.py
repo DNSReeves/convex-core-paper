@@ -153,6 +153,46 @@ def total_return(g, start, end):
         return None
     return float(seg.iloc[-1] / seg.iloc[0] - 1)
 
+def maxdd_window(g, start, end):
+    """Intra-window max drawdown (peak-to-trough) over [start, end]."""
+    g = g.dropna()
+    seg = g[(g.index >= start) & (g.index <= end)]
+    if len(seg) < 3:
+        return None
+    return float((seg / seg.cummax() - 1).min())
+
+def mc_vs_benchmark(a_ret, b_ret, *, B=3000, L=21, seed=20260614):
+    """Paired circular block bootstrap (reuses ACTUAL paired daily returns — no
+    parametric DGP) → distribution of terminal wealth, max drawdown and Calmar for
+    strategy a vs benchmark b, with head-to-head win-rates. Quantifies path
+    uncertainty; does NOT manufacture power beyond the sampled history."""
+    j = pd.concat({"a": a_ret, "b": b_ret}, axis=1, sort=False).dropna()
+    a = j["a"].to_numpy(); b = j["b"].to_numpy()
+    n = len(a); rng = np.random.default_rng(seed); nb = int(np.ceil(n / L))
+    yrs = n / TRADING
+    def _stats(r):
+        g = np.cumprod(1.0 + r)
+        cagr = g[-1] ** (1 / yrs) - 1
+        dd = (g / np.maximum.accumulate(g) - 1).min()
+        calmar = cagr / abs(dd) if dd < 0 else np.nan
+        return g[-1], float(dd), float(calmar), float(cagr)
+    win_dd = win_tw = win_cal = 0
+    a_dd, b_dd, a_tw, b_tw = [], [], [], []
+    for _ in range(B):
+        starts = rng.integers(0, n, size=nb)
+        idx = np.concatenate([(np.arange(s, s + L) % n) for s in starts])[:n]
+        atw, add, acal, _ = _stats(a[idx]); btw, bdd, bcal, _ = _stats(b[idx])
+        win_dd += add > bdd          # a's drawdown shallower (less negative)
+        win_tw += atw > btw
+        win_cal += (acal > bcal) if not (np.isnan(acal) or np.isnan(bcal)) else 0
+        a_dd.append(add); b_dd.append(bdd); a_tw.append(atw); b_tw.append(btw)
+    pct = lambda x, p: float(np.percentile(x, p))
+    return dict(resamples=B, block_len=L, n_obs=n,
+                p_shallower_dd=win_dd / B, p_higher_terminal=win_tw / B,
+                p_higher_calmar=win_cal / B,
+                a_maxdd_p05=pct(a_dd, 5), a_maxdd_p50=pct(a_dd, 50), a_maxdd_p95=pct(a_dd, 95),
+                b_maxdd_p05=pct(b_dd, 5), b_maxdd_p50=pct(b_dd, 50), b_maxdd_p95=pct(b_dd, 95))
+
 def up_down_capture(r, spy_ret, freq="ME"):
     a = (1 + r).resample(freq).prod() - 1
     b = (1 + spy_ret).resample(freq).prod() - 1
@@ -251,6 +291,9 @@ def build():
             convex=total_return(curves["Convex Core (0.95)"], a, b),
             spy=total_return(curves["SPY"], a, b),
             b6040=total_return(curves["60/40 SPY/IEF (Q)"], a, b),
+            convex_dd=maxdd_window(curves["Convex Core (0.95)"], a, b),
+            spy_dd=maxdd_window(curves["SPY"], a, b),
+            b6040_dd=maxdd_window(curves["60/40 SPY/IEF (Q)"], a, b),
         ))
 
     # capture + rolling corr (Convex vs SPY and vs 60/40)
@@ -268,6 +311,9 @@ def build():
         convex_vs_spy=bootstrap_diff(conv_ret, spy_ret, rf),
         convex_vs_best_balanced=bootstrap_diff(conv_ret, b4060_ret, rf),
         best_balanced_label="40/60 SPY/IEF (Q)")
+
+    # Monte Carlo (paired block bootstrap) — Convex vs 60/40 SPY/IEF
+    monte_carlo = mc_vs_benchmark(conv_ret, b6040_ret)
 
     # downsampled growth curves for charts (monthly)
     def ds(g):
@@ -302,6 +348,7 @@ def build():
         capture=capture,
         corr_spy_full=corr_spy_full,
         significance=significance,
+        monte_carlo=monte_carlo,
         rolling_corr_spy=rc_spy,
         rolling_corr_6040=rc_6040,
         chart_curves=chart_curves,

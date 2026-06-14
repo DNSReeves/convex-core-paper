@@ -12,14 +12,13 @@ Output: ~/DNSR_Convex_Core_Publication_2026-06-14.html
 """
 from __future__ import annotations
 import base64, io, json
-import os as _os
 import numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# Companion-repo layout: this script lives in report/; inputs ship under
-# results/ and config/. Resolve everything relative to the repo root so a
-# cloner can regenerate the paper from the shipped artifacts (no env needed).
+import os as _os
+# Companion-repo layout: inputs ship under results/ and config/, resolved relative
+# to the repo root so a cloner regenerates the paper from shipped artifacts (no env).
 REPO = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
 RESULTS = _os.path.join(REPO, "results")
 BJSON = _os.path.join(RESULTS, "benchmarks.json")
@@ -315,6 +314,22 @@ def _sig(diff):
     return (f"{diff['point']:+.2f} <span style='color:#555'>(95% CI "
             f"[{diff['ci_low']:+.2f}, {diff['ci_high']:+.2f}], p={diff['p_le_0']:.3f})</span>")
 
+MC = B.get("monte_carlo")
+
+def crisis_maxdd_table():
+    head = ("<tr><th>Crisis window</th><th>Convex Core</th><th>60/40 SPY/IEF</th>"
+            "<th>SPY</th><th>Convex vs 60/40</th></tr>")
+    rows = []
+    for c in B["crisis"]:
+        if c.get("convex_dd") is None: continue
+        cv, bb, sp = c["convex_dd"], c["b6040_dd"], c["spy_dd"]
+        verdict = ("Convex shallower" if cv > bb + 0.01 else
+                   "60/40 shallower" if bb > cv + 0.01 else "≈ tie")
+        rows.append(f"<tr><td style='text-align:left'>{c['window']}</td>"
+                    f"<td><b>{cv*100:.1f}%</b></td><td>{bb*100:.1f}%</td><td>{sp*100:.0f}%</td>"
+                    f"<td style='text-align:left'>{verdict}</td></tr>")
+    return f"<table>{head}{''.join(rows)}</table>"
+
 def appendix_e():
     if not SIG:
         return ("<h2>Appendix E — Statistical Tests (planned)</h2><p>Bootstrap not available.</p>")
@@ -382,7 +397,7 @@ P.append(f"""
  <h1>Convex Core and the DNSR Model Suite</h1>
  <div class="fs-sub">A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding<br>
    <span style="font-weight:normal;font-size:13px;color:#555">Evidence from a 2006–2026 backtest, traditional allocation benchmarks, and five pre-registered failed return-prediction experiments</span></div>
- <div class="fs-authors">{principal_credit()} · Principal<br>Research conducted by the DNSR Agentic AI system — with Anthropic Fable&nbsp;5 and Opus&nbsp;4.8</div>
+ <div class="fs-authors">{principal_credit()} · Principal<br>Research conducted by the DNSR Agentic AI system, directed and reviewed by the principal. No large-language model participates in the portfolio math.</div>
  <p class="fs-lead"><b>Bottom line.</b> Convex Core is a deterministic, risk-managed ETF allocation framework that preserves most of the equity market's long-run return while materially reducing exposure to high-volatility drawdown regimes. In a {span[0][:4]}–{span[1][:4]} backtest, net of modeled costs, it produced a {CV['cagr']*100:.1f}% CAGR versus {SP['cagr']*100:.1f}% for SPY, improving Sortino from {SP['sortino']:.2f} to {CV['sortino']:.2f} and cutting maximum drawdown from {SP['maxdd']*100:.0f}% to {CV['maxdd']*100:.0f}%. Critically, a <b>beta-matched</b> SPY/T-bill portfolio at the same β=0.42 earns only {BM['cagr']*100:.1f}% with a {BM['maxdd']*100:.0f}% drawdown, and a <b>volatility-targeted</b> SPY reaches {VT['sortino']:.2f} Sortino — so the result is not merely lower beta or volatility scaling. Separately, five pre-registered experiments to improve return <i>prediction</i> each failed their baselines, supporting the design choice to emphasize drawdown control over higher-capacity forecasting.</p>
  <table>
   <tr><th>Strategy</th><th>CAGR</th><th>Sortino</th><th>Max DD</th><th>Calmar</th><th>β vs SPY</th></tr>
@@ -404,7 +419,7 @@ P.append(f"""
 P.append(f"""
 <h1>Convex Core and the DNSR Model Suite</h1>
 <div class="sub">A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding — Evidence from a {span[0][:4]}–{span[1][:4]} Backtest, Traditional Allocation Benchmarks, and Five Pre-Registered Failed Return-Prediction Experiments</div>
-<div class="auth"><b>Principal:</b> {principal_credit()} · Houston, Texas · June 2026<br><b>Research system:</b> the DNSR Agentic AI pipeline — with Anthropic Fable&nbsp;5 and Opus&nbsp;4.8 (directed and reviewed by the principal)</div>
+<div class="auth"><b>Principal:</b> {principal_credit()} · Houston, Texas · June 2026<br><b>Research system:</b> the DNSR Agentic AI pipeline, directed and reviewed by the principal (system/model details in §3.1 and the Disclaimer)</div>
 
 <div class="abs"><b>Abstract.</b> This report presents the DNSR Model Suite, a deterministic set of rules-based ETF allocation frameworks designed to test whether liquid ETF portfolios are better improved through return prediction or drawdown control. The primary model, Convex Core, does not forecast returns. Instead, it maintains broad U.S. equity exposure while using a crisis-convex hedge sleeve, Treasury ballast, and a realized-volatility brake to reduce exposure during high-risk regimes. In a {span[0][:4]}–{span[1][:4]} backtest, net of modeled costs, Convex Core produced a {CV['cagr']*100:.1f}% CAGR compared with {SP['cagr']*100:.1f}% for SPY, while improving Sortino from {SP['sortino']:.2f} to {CV['sortino']:.2f} and reducing maximum drawdown from {SP['maxdd']*100:.0f}% to {CV['maxdd']*100:.0f}%. Five pre-registered return-prediction experiments — cross-sectional ETF ranking, ML volatility forecasting, trend-clarity features, multi-strategy blending, and universe modernization — failed their pre-specified baselines. These results support a conservative conclusion: in this liquid ETF universe, the more robust opportunity appears to be risk-managed compounding rather than higher-capacity return forecasting. All portfolio-construction rules are deterministic, and no large-language model participates in the allocation engine.</div>
 """)
@@ -443,7 +458,7 @@ P.append("""
 <li><b>Negative results that ship.</b> Five pre-registered failures are reported alongside the positive result. Academic journals rarely publish failed strategies and practitioner white papers essentially never do; publishing the gated failures is the paper's strongest point of difference.</li>
 <li><b>Determinism and reproducibility end-to-end.</b> A zero-fitted-parameter flagship, no large-language model anywhere in the allocation math, and a complete reproducibility manifest (Appendix F) — a standard of auditability uncommon in published backtests.</li>
 <li><b>Honesty calibration.</b> Claims are significance-tested and the inconvenient findings are kept in the text — e.g., the bootstrap result (§8.1) that Convex Core is <i>not</i> statistically separable from a 60/40 portfolio on risk-adjusted ratios, and the validation (§12, §15) that the regime layer is a second-order refinement rather than the source of the edge.</li>
-<li><b>An AI-conducted research process.</b> The experiments here were designed, pre-registered, executed, and self-critically reported by an autonomous agentic-AI research pipeline. The methodological discipline — pre-registration, leakage control, published negatives — was applied by the system itself; this process is a contribution distinct from, and arguably more novel than, the financial content.</li>
+<li><b>An AI-conducted research process.</b> The experiments here were designed, pre-registered, executed, and self-critically reported by an autonomous agentic-AI research pipeline (the DNSR Agentic AI system, built on Anthropic Fable&nbsp;5 and Opus&nbsp;4.8), directed and reviewed by the principal. The methodological discipline — pre-registration, leakage control, published negatives — was applied by the system itself; this process is a contribution distinct from, and arguably more novel than, the financial content. To be clear, this is a property of the <i>research workflow</i>: no large-language model participates in the allocation math, which is fully deterministic.</li>
 </ul>
 """)
 
@@ -532,12 +547,27 @@ if SIG:
     vs_spy = SIG["convex_vs_spy"]; vs_bal = SIG["convex_vs_best_balanced"]
     P.append(f"""
 <h3>8.1 Statistical significance of the risk-adjusted edge</h3>
-<p>Point estimates can mislead on a ~20-year, drawdown-driven series, so we test the <i>difference</i> in risk-adjusted ratios with a circular block bootstrap (block length {vs_spy['block_len']} trading days, {vs_spy['resamples']:,} resamples; paired to preserve cross-correlation). Detail and the full table are in Appendix&nbsp;E (Table&nbsp;11).</p>
+<p>Point estimates can mislead on a ~20-year, drawdown-driven series, so we test the <i>difference</i> in risk-adjusted ratios with a circular block bootstrap (block length {vs_spy['block_len']} trading days, {vs_spy['resamples']:,} resamples; paired to preserve cross-correlation). Detail and the full table are in Appendix&nbsp;E.</p>
 <ul>
 <li><b>vs SPY:</b> the Sharpe difference is {_sig(vs_spy['sharpe_diff'])} — significant on a one-sided 5% test (p={vs_spy['sharpe_diff']['p_le_0']:.3f}), with the two-sided 95% interval marginally including zero; the Sortino difference is {_sig(vs_spy['sortino_diff'])} — positive but only borderline (p={vs_spy['sortino_diff']['p_le_0']:.3f}). Convex Core's risk-adjusted superiority over the index is statistically supported, if modestly.</li>
 <li><b>vs the best balanced benchmark (40/60 SPY/IEF):</b> the Sortino difference is {_sig(vs_bal['sortino_diff'])} and the Sharpe difference {_sig(vs_bal['sharpe_diff'])} — <b>not statistically distinguishable from zero.</b> On risk-adjusted ratios alone, Convex Core is <i>comparable</i> to a simple 40/60 portfolio at this sample size.</li>
 </ul>
 <p>This is an important, deliberately stated qualification: Convex Core's defensible claim is not that it dominates every balanced portfolio on risk-adjusted ratios — at ~6 independent stress episodes the sample cannot support that — but that it achieves a <i>comparable</i> risk-adjusted, lower-drawdown profile <b>at materially higher absolute return</b> ({CV['cagr']*100:.1f}% vs {B46['cagr']*100:.1f}% CAGR for 40/60), i.e. it sits closer to the efficient frontier, while remaining statistically superior to the equity index itself.</p>
+""")
+
+if MC:
+    P.append(f"""
+<h3>8.2 Monte Carlo comparison versus 60/40</h3>
+<p>To characterize the head-to-head with the primary balanced benchmark beyond a single historical path, we run a <b>paired circular block bootstrap</b> (block length {MC['block_len']} trading days, {MC['resamples']:,} resamples) on the <i>actual</i> daily returns of Convex Core and 60/40 SPY/IEF — resampling real return blocks jointly, so autocorrelation and the two strategies' cross-correlation are preserved. This is deliberately <b>not</b> a parametric simulation: drawing from a fitted normal/t distribution would suppress exactly the fat tails and stock–bond-correlation breakdowns the model exists to survive. Across the {MC['resamples']:,} synthetic histories:</p>
+<table>
+<tr><th>Outcome (Convex Core vs 60/40 SPY/IEF)</th><th>Probability</th></tr>
+<tr><td style="text-align:left">Higher terminal wealth</td><td><b>{MC['p_higher_terminal']*100:.0f}%</b></td></tr>
+<tr><td style="text-align:left">Higher Calmar (return per unit of max drawdown)</td><td><b>{MC['p_higher_calmar']*100:.0f}%</b></td></tr>
+<tr><td style="text-align:left">Shallower maximum drawdown</td><td>{MC['p_shallower_dd']*100:.0f}%</td></tr>
+<tr><td style="text-align:left">Max-drawdown distribution (5th / 50th / 95th pct)</td><td>Convex {MC['a_maxdd_p05']*100:.0f}/{MC['a_maxdd_p50']*100:.0f}/{MC['a_maxdd_p95']*100:.0f}% &nbsp;vs&nbsp; 60/40 {MC['b_maxdd_p05']*100:.0f}/{MC['b_maxdd_p50']*100:.0f}/{MC['b_maxdd_p95']*100:.0f}%</td></tr>
+</table>
+<div class="cap">Table 8. Monte Carlo (paired block bootstrap) outcomes, Convex Core vs 60/40 SPY/IEF, net of costs.</div>
+<p><b>Interpretation.</b> The <i>reliable</i> edge is compounding, not drawdown: Convex out-finishes 60/40 in <b>{MC['p_higher_terminal']*100:.0f}%</b> of histories and posts a better Calmar in <b>{MC['p_higher_calmar']*100:.0f}%</b>, but its maximum drawdown is shallower only <b>{MC['p_shallower_dd']*100:.0f}%</b> of the time — the two drawdown distributions overlap heavily (median {MC['a_maxdd_p50']*100:.0f}% vs {MC['b_maxdd_p50']*100:.0f}%). So the honest summary is <i>higher terminal wealth at comparable-to-modestly-better drawdown</i>, not uniformly lower drawdown. As with all bootstraps on this sample, this quantifies path uncertainty; it cannot manufacture statistical power beyond the ~6 independent stress regimes in the data.</p>
 """)
 
 # ---- 9 Traditional Allocation Comparisons ---------------------------------
@@ -565,7 +595,7 @@ P.append(f"""
 <h2>11. Crisis-Period Attribution</h2>
 <p>A drawdown-control model should be judged primarily during drawdown regimes. Table 3 reports total returns across the major equity-stress windows in the sample.</p>
 {crisis_table()}
-<div class="cap">Table 3. Crisis-window total returns (hypothetical/backtested, net of costs). The per-sleeve decomposition is in §11.1 / Table 3b. Convex figures use the published 0.95 curve; §11.1 uses the instrumented engine run, which reproduces it to &lt;1 pp per window.</div>
+<div class="cap">Table 3. Crisis-window total returns (hypothetical/backtested, net of costs). The per-sleeve decomposition is in §11.1. Convex figures use the published 0.95 curve; §11.1 uses the instrumented engine run, which reproduces it to &lt;1 pp per window.</div>
 <img src="{F5}"/><div class="cap">Figure 7. Crisis-window total returns — Convex Core's loss is a fraction of SPY's in every window, and below 60/40 in all but the mildest.</div>
 """)
 
@@ -580,6 +610,15 @@ if HAS_T2:
 else:
     P.append("""<div class="tier2"><b>Tier-2 pending — per-sleeve attribution.</b> Run `pub_tier2/run_tier2.py` to populate this section.</div>""")
 P.append("")
+
+P.append(f"""
+<h3>11.2 Case study — 2022, and when balanced diversification fails</h3>
+<p>The clearest practical contrast with a balanced portfolio is the maximum drawdown <i>within</i> each crisis, where the regime-dependence of the advantage is explicit:</p>
+{crisis_maxdd_table()}
+<div class="cap">Table 99. Intra-window maximum drawdown (peak-to-trough) by crisis, net of costs — Convex Core vs 60/40 SPY/IEF vs SPY.</div>
+<p><b>The advantage concentrates in severe, correlated selloffs — it is not uniform.</b> Convex Core's drawdown is far shallower than 60/40's in the <b>2008 GFC</b> and the <b>2022</b> inflation/rate shock, and comparable in <b>COVID</b>. But in milder, bond-rallying stress — 2011, 2015–16, Q4-2018 — a 60/40 portfolio actually drew down <i>less</i>, because its Treasury leg did the work while Convex carries lower but still material equity. The honest generalization is the Monte Carlo result (§8.2): across resampled histories Convex's drawdown is shallower roughly two-thirds of the time, not always.</p>
+<p><b>Why 2022 is the signature case.</b> 2022 was a simultaneous stock-<i>and</i>-bond selloff, so a 60/40's diversification failed on both legs at once. Convex Core's convexity sleeve — managed futures / trend-following — was <i>positive</i> (§11.1: +4.5%) exactly when the Treasury leg was a drag (−1.6%). This is the structural distinction an advisor should weigh: <b>Convex's protection does not depend on bonds rallying</b>, which is the precise failure mode of a balanced portfolio in an inflation/rate shock. The trade-off is the COVID-type <i>fast</i> crash, where the volatility brake cannot de-risk quickly enough and a bond-heavy portfolio's flight-to-quality rally matches it.</p>
+""")
 
 # ---- 12 Robustness --------------------------------------------------------
 P.append(f"""
@@ -651,7 +690,7 @@ P.append(f"""
 <tr><th>Consideration</th><th>Discussion</th></tr>
 <tr><td>Account type</td><td>Best suited to tax-sheltered accounts; rebalancing may create taxable events elsewhere</td></tr>
 <tr><td>Liquidity</td><td>ETFs are liquid; execution timing still matters</td></tr>
-<tr><td>Turnover</td><td>Reported per strategy (Table 2); the convexity sleeve drives most trades</td></tr>
+<tr><td>Turnover</td><td>Reported per strategy (§9); the convexity sleeve drives most trades</td></tr>
 <tr><td>Trading cadence</td><td>Weekly signal, drift-band execution</td></tr>
 <tr><td>Behavioral risk</td><td>Lower drawdown may reduce abandonment risk</td></tr>
 <tr><td>Sequence risk</td><td>Especially relevant for retirees / near-retirees</td></tr>
@@ -666,6 +705,7 @@ P.append(f"""
 <li><b>Transparency a fiduciary can actually stand behind.</b> The allocation is deterministic, parameter-minimal, and contains <i>no</i> machine-learning or large-language-model component in the weight math; every position is explainable from published rules and reproducible from an auditable manifest. In a suitability and fiduciary context that is materially easier to defend — and to monitor — than an opaque or discretionary "black box."</li>
 <li><b>A template for the evidence advisors should demand.</b> Pre-registered hypotheses, leakage-controlled testing, significance-tested claims, and <i>published failures</i> are the standard any strategy pitched to an advisor should meet. The five negative results are themselves advisor-relevant: they are direct evidence against paying elevated fees for complexity- or "AI"-branded return prediction on liquid, low-breadth ETF universes, where — consistent with the literature — no robust net-of-cost edge was found. The defensible posture for most clients is broad, cheap beta with disciplined risk management, not purchased forecasting.</li>
 </ul>
+<p><b>The honesty is part of the deliverable.</b> This bears stating plainly. Because Convex Core is statistically comparable to a 60/40 portfolio on risk-adjusted ratios (§8.1–§8.2), the model alone is not what an advisor is really receiving — what makes it <i>actionable</i> is the disciplined, reproducible, failure-reporting methodology wrapped around it. That methodology converts "another balanced-allocation variant" into one whose claims are significance-tested, whose drawdown behavior is decomposed and regime-attributed, and whose construction is auditable end-to-end — i.e., one an advisor can defend to a client and a regulator. The transferable value is the <i>standard</i>: the same evidentiary bar should be demanded of every strategy an advisor is asked to deploy, and most will not clear it.</p>
 """)
 
 # ---- 15 Limitations -------------------------------------------------------
@@ -674,6 +714,7 @@ P.append("""
 <p>These results are historical backtests, not live audited performance. Although the model is deterministic and net of modeled costs, the results remain sensitive to universe definition, start date, rebalance cadence, volatility-estimation method, transaction-cost assumptions, ETF availability, and the behavior of crisis-hedge instruments in future regimes. Convex Core's reduced drawdown profile depends materially on the assumption that managed futures, duration exposure, and anti-beta instruments continue to provide useful diversification during equity stress. That relationship may weaken or fail in regimes characterized by simultaneous equity, bond, and trend-following losses.</p>
 <p>The model also involves design discretion. While no statistical return-forecasting model is trained inside Convex Core and no LLM participates in portfolio construction, the sleeve architecture, hedge definitions, volatility target, and security-selection rules were selected by the research team. These choices should be treated as model-design assumptions rather than independently proven laws. Finally, the live record is short: the backtest supports the hypothesis that deterministic drawdown control can improve downside-risk-adjusted returns, but does not establish that future performance will resemble the historical simulation.</p>
 <p><b>Statistical power.</b> The drawdown-control thesis rests on roughly six independent equity-stress episodes in the sample; the start-date grid (§12.2) uses nested sub-windows of one path and is a stability check, not independent evidence. Consistent with this, the bootstrap (§8.1, Appendix&nbsp;E) finds Convex Core's risk-adjusted edge <i>significant versus the equity index</i> but <i>not statistically separable from a 40/60 portfolio</i>. The honest claim is comparable-risk-adjusted-at-higher-return, not risk-adjusted dominance over balanced allocations.</p>
+<p><b>Sample coverage.</b> The backtest begins in 2006 and therefore <i>excludes the 2000–2002 dot-com bear market</i>. This is not a choice but a data constraint: the model's defining instruments did not yet exist (the managed-futures and anti-beta convexity funds, the Treasury and most factor-tilt ETFs post-date 2002–2011), so a faithful backtest of the actual rules over that period is impossible. A clearly-labeled <i>proxy</i> reconstruction from index and factor series (equity total return, a Treasury-index proxy, a published trend-following index, a betting-against-beta factor) could <i>estimate</i> behavior in that episode — a separate exercise, not a backtest — and is noted as future work. The dot-com bear (a slow grind in which both Treasuries and trend-following did well) is a regime in which the framework would plausibly have helped, but we do not claim a result we cannot compute.</p>
 <p><b>Regime calibration (validated).</b> Two protective mechanisms (the duration-sleeve mix and the stress cap) plus the tilt scoring condition on a regime classifier whose numeric cutoffs are an <i>a priori</i> interpretation of qualitative design-spec definitions, not fitted to the backtest. The validation in §12.3 confirms this is not a hidden in-sample degree of freedom: removing the entire regime layer changes full-sample Sortino by only 0.02, the layer's contribution is positive in early crises and mildly negative recently (net negligible), and the result is robust to hysteresis and ±20% threshold perturbation. The regime calibration is therefore not a material driver of the headline. (A frozen-cutoff <i>parameter re-optimization</i> walk-forward remains possible future work, but is not required to support the result, since the result does not lean on the calibration.)</p>
 """)
 
@@ -681,7 +722,8 @@ P.append("""
 P.append("""
 <h2>16. Conclusion</h2>
 <p>Convex Core provides evidence that a deterministic, risk-managed ETF allocation framework can materially improve the historical drawdown and downside-risk-adjusted profile of an equity-oriented portfolio while preserving most of the long-run return of SPY. The advantage is not absolute-return dominance; it is improved path quality, lower drawdown, lower beta, and stronger downside-risk-adjusted compounding in the tested period — and it persists against balanced, beta-matched, and volatility-targeted alternatives.</p>
-<p>The accompanying negative results are equally important. Five pre-registered experiments failed to establish a robust return-prediction edge in the same liquid ETF environment. This supports the central design choice: use broad equity exposure for long-run return, and spend model complexity on drawdown control rather than high-capacity return forecasting. The sleeve-ablation, parameter-sensitivity, and per-sleeve crisis-attribution evidence (§11.1, §12) confirms the drawdown control is structural — driven by the volatility brake and the hedge sleeves, not by low beta alone. Future work focuses on live tracking, total-portfolio integration, additional overfitting diagnostics (Deflated Sharpe, PBO/CSCV — beyond the bootstrap significance test already in Appendix E), and continued pre-registration of any proposed enhancements.</p>
+<p>The accompanying negative results are equally important. Five pre-registered experiments failed to establish a robust return-prediction edge in the same liquid ETF environment. This supports the central design choice: use broad equity exposure for long-run return, and spend model complexity on drawdown control rather than high-capacity return forecasting. The sleeve-ablation, parameter-sensitivity, and per-sleeve crisis-attribution evidence (§11.1, §12) confirms the drawdown control is structural — driven by the volatility brake and the hedge sleeves, not by low beta alone.</p>
+<p><b>Directions for future research.</b> The results here imply a specific, disciplined prior about where improvement can and cannot come from. Because the binding constraint on this liquid, low-breadth ETF universe is <i>signal and breadth, not model capacity</i>, we conjecture — and explicitly do not promise — that further gains are unlikely from higher-capacity models or additional price-derived features (each of which was tested and rejected here), and more plausibly from genuinely <i>orthogonal</i> information. The most promising candidate is an <b>options-implied layer</b> — the variance risk premium and the volatility skew/term-structure — which is forward-looking and largely independent of the price-momentum signals already exhausted; whether it survives costs and a pre-registered out-of-sample gate is an open question we frame, not answer. Two further directions are squarely practitioner-facing: <b>(i) sequence-risk and total-portfolio simulation</b> — quantifying how the framework changes retirement-withdrawal sustainability and household-level drawdown when combined with the rest of a balance sheet, rather than in isolation; and <b>(ii) crisis-hedge robustness</b> — since the drawdown profile depends on managed-futures, anti-beta, and duration diversification continuing to function in stress, alternative and complementary convexity sources merit study, as does the fast-crash case (§11.2) where the volatility brake reacts too slowly. We deliberately do <i>not</i> propose re-adding model complexity; the disciplined null results argue against it. Nearer-term, ongoing work is live out-of-sample tracking, the remaining overfitting diagnostics (Deflated Sharpe, PBO/CSCV — beyond the bootstrap already in Appendix E), and continued pre-registration of any proposed enhancement.</p>
 """)
 
 # ---- 18 Model status (placed here as a labelled subsection) ----------------
@@ -705,7 +747,7 @@ P.append(f"""
 <tr><td style="text-align:left">"The hedge sleeve may not work in the future."</td><td style="text-align:left">✓ Per-sleeve crisis attribution (§11.1) + explicit hedge-failure limitation (§15).</td></tr>
 <tr><td style="text-align:left">"Convex Prime is leveraged and not comparable."</td><td style="text-align:left">✓ Moved to research-only §17; excluded from headline tables.</td></tr>
 <tr><td style="text-align:left">"Track B has short history."</td><td style="text-align:left">✓ Kept out of main results; labeled forward-only watchlist (Appendix B).</td></tr>
-<tr><td style="text-align:left">"No turnover/cost detail."</td><td style="text-align:left">✓ Turnover (Table 2/5) + slippage sensitivity 0/5/10/25 bps (§12.2).</td></tr>
+<tr><td style="text-align:left">"No turnover/cost detail."</td><td style="text-align:left">✓ Turnover (§9 and §12.1) + slippage sensitivity 0/5/10/25 bps (§12.2).</td></tr>
 <tr><td style="text-align:left">"The model is not truly out-of-sample."</td><td style="text-align:left">Acknowledged — "deterministic, rule-based backtest" used (§5); the regime cutoffs are a-priori and validated as non-material (§12.3 — removing the regime layer moves Sortino 0.02).</td></tr>
 <tr><td style="text-align:left">"Are the risk-adjusted differences statistically significant?"</td><td style="text-align:left">✓ Block-bootstrap test (§8.1, Appendix E): significant vs SPY (Sharpe), not separable from 40/60 — stated, not hidden.</td></tr>
 </table>
@@ -796,5 +838,11 @@ P.append(f"""
 </body></html>""")
 
 HTML = "\n".join(P)
+import re as _re
+_tn = [0]
+def _renumber_tables(m):
+    _tn[0] += 1
+    return f'<div class="cap">Table {_tn[0]}.'
+HTML = _re.sub(r'<div class="cap">Table \d+[a-z]?\.', _renumber_tables, HTML)
 open(OUT, "w").write(HTML)
 print("wrote", OUT, f"({len(HTML)//1024} KB)")
