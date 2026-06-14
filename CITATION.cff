@@ -39,6 +39,7 @@ abstract: >-
   in the allocation math. Hypothetical, backtested performance; not investment advice.
 preferred-citation:
   type: report
+  doi: "10.5281/zenodo.20693932"
   title: "Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding"
   authors:
     - family-names: Reeves
