@@ -79,6 +79,9 @@ AI-conducted, pre-registered research process. See the paper’s §3.1.
 > Opus 4.8). *Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework
 > for Drawdown-Controlled Compounding.* 2026.
 
+Machine-readable metadata is in [`CITATION.cff`](CITATION.cff) — GitHub renders a
+**“Cite this repository”** button from it (APA/BibTeX export).
+
 ## License
 
 - **Code** (engine, report/research scripts, tests): **PolyForm Noncommercial License 1.0.0** —

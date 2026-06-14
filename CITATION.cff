@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: "If you use this software or its accompanying research, please cite it using the metadata below."
+title: "Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding"
+type: software
+authors:
+  - family-names: Reeves
+    given-names: David
+    affiliation: "DNSR Investments, LLC"
+    website: "https://www.linkedin.com/in/david-reeves-8a664524"
+  - name: "DNSR Agentic AI system (with Anthropic Fable 5 and Opus 4.8)"
+version: "1.0.0"
+date-released: "2026-06-14"
+license: PolyForm-Noncommercial-1.0.0
+url: "https://github.com/DNSReeves/convex-core-paper"
+repository-code: "https://github.com/DNSReeves/convex-core-paper"
+keywords:
+  - quantitative-finance
+  - asset-allocation
+  - portfolio-construction
+  - etf
+  - backtesting
+  - risk-management
+  - drawdown-control
+  - volatility-targeting
+  - trend-following
+  - factor-investing
+  - reproducible-research
+  - pre-registration
+abstract: >-
+  Companion code and computed artifacts for Convex Core, a deterministic,
+  drawdown-controlled ETF allocation framework, validated with pre-registered
+  tests and published negative results. The principal directs and reviews an
+  autonomous agentic-AI research pipeline; no large-language model participates
+  in the allocation math. Hypothetical, backtested performance; not investment advice.
+preferred-citation:
+  type: report
+  title: "Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding"
+  authors:
+    - family-names: Reeves
+      given-names: David
+      affiliation: "DNSR Investments, LLC"
+      website: "https://www.linkedin.com/in/david-reeves-8a664524"
+    - name: "DNSR Agentic AI system (with Anthropic Fable 5 and Opus 4.8)"
+  year: 2026
+  month: 6
+  institution:
+    name: "DNSR Investments, LLC"
+  url: "https://github.com/DNSReeves/convex-core-paper"
