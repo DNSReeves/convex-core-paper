@@ -1,6 +1,6 @@
 # Convex Core — Reproducibility Companion
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20693932.svg)](https://doi.org/10.5281/zenodo.20693932)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20693931.svg)](https://doi.org/10.5281/zenodo.20693931)
 
 Companion code and data artifacts for the research report
 **“Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework
