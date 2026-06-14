@@ -1,5 +1,7 @@
-"""Convex Core pins: vol brake behavior, PIT convexity fold-to-duration,
-band rebalancing, slow re-risking, determinism, benchmark math, live smoke."""
+"""Convex Core engine pins (companion repo). Auxiliary tests from the private
+suite (search-sampling, factor-report, bootstrap, live-DB smoke) were trimmed —
+they exercise tooling outside the published engine. These 16 are self-contained
+(synthetic data, no warehouse needed)."""
 
 from __future__ import annotations
 
@@ -12,7 +14,7 @@ from tradeclassifier.alpha_backtest import AlphaData
 from tradeclassifier.convex_core import (DEFAULTS, _max_recovery_days,
                                          simulate_benchmark, simulate_convex)
 from .conftest import requires_db
-from .test_alpha_backtest import MCFG
+from ._mcfg import MCFG
 
 
 def _panel(n: int = 700, vol_regime: str = "calm", seed: int = 13) -> AlphaData:
@@ -130,20 +132,6 @@ def test_benchmarks():
         simulate_benchmark(p, "70_30")
 
 
-@requires_db
-def test_live_short_window(warehouse):
-    import yaml
-    from tradeclassifier.alpha_backtest import precompute_alpha_data
-    from tradeclassifier.portfolio import MODEL_FILE, UNIVERSE_FILE
-    ucfg = yaml.safe_load(UNIVERSE_FILE.read_text())
-    mcfg = yaml.safe_load(MODEL_FILE.read_text())
-    data = precompute_alpha_data(warehouse, ucfg, "2019-01-01", "2021-06-01")
-    r = simulate_convex(data, mcfg)
-    spy = simulate_benchmark(data, "spy")
-    # COVID window: the model must lose materially less than SPY
-    assert r.stress_windows["COVID_2020_03"] > spy.stress_windows["COVID_2020_03"]
-    assert r.metrics["max_drawdown"] > spy.metrics["max_drawdown"]  # less negative
-    assert r.calmar is not None
 
 def test_scores_cache_equivalence():
     """Search-mode (cached scores) must reproduce live-mode exactly."""
@@ -155,24 +143,6 @@ def test_scores_cache_equivalence():
     assert live.daily_returns == cached.daily_returns
 
 
-def test_search_sampling_and_clamp():
-    import random
-    import sys
-    from pathlib import Path
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-    from run_convex_search import BOX, MAX_EQ_PLUS_CX, clamp, sample_params
-    rng = random.Random(42)
-    for _ in range(300):
-        s = sample_params(rng)
-        for k, (lo, hi) in BOX.items():
-            assert lo - 1e-9 <= s[k] <= hi + 1e-9, k
-        assert s["w_equity"] + s["w_convexity"] <= MAX_EQ_PLUS_CX + 1e-9
-    prior = sample_params(rng)
-    jumped = dict(prior, vol_target=prior["vol_target"] + 0.05)
-    log = []
-    out = clamp(jumped, prior, log)
-    assert out["vol_target"] == prior["vol_target"]
-    assert any("vol_target" in e for e in log)
 
 
 def test_brake_v2_variants_behave():
@@ -212,30 +182,6 @@ def test_xasset_pool_changes_tilts():
     assert narrow.daily_returns != wide.daily_returns
 
 
-def test_factor_report_recovers_known_loadings():
-    import numpy as np
-    from tradeclassifier.factor_report import factor_exposures
-    p = _panel(n=900)
-    # construct a portfolio = 0.8·SPY + 0.3·(MTUM−SPY) + 2bps/day residual
-    # (panel must contain the factor ETFs: alias them onto existing series)
-    for need, donor in (("MTUM", "MTUM"), ("VLUE", "QUAL"), ("USMV", "QUAL"),
-                        ("IWM", "XLK"), ("EFA", "QUAL")):
-        if need not in p.rets:
-            p.rets[need] = p.rets[donor]
-            p.prices[need] = p.prices[donor]
-            p.first_usable[need] = 273
-    rets, dates = [], []
-    for i in range(274, len(p.days)):
-        r = (0.8 * p.rets["SPY"][i]
-             + 0.3 * (p.rets["MTUM"][i] - p.rets["SPY"][i]) + 0.0002)
-        rets.append(float(r))
-        dates.append(p.days[i])
-    rep = factor_exposures(dates, rets, p)
-    assert not rep.get("unavailable"), rep
-    assert rep["loadings"]["MKT"]["beta"] == pytest.approx(0.8, abs=0.05)
-    assert rep["loadings"]["MOM"]["beta"] == pytest.approx(0.3, abs=0.1)
-    assert rep["residual_alpha_ann"] == pytest.approx(0.0002 * 252, rel=0.25)
-    assert rep["r2"] > 0.95
 
 
 def test_equity_adj_moves_exposure():
@@ -267,23 +213,6 @@ def test_value_slot_guarantee():
     assert "VLUE" not in picks0
 
 
-def test_bootstrap_ci():
-    import numpy as np
-    from tradeclassifier.bootstrap import bootstrap_ci
-    # drift gap wide enough that the realization can't flip (seed-1 with a
-    # 2bps gap realized INVERTED Sharpes — the bootstrap honestly reported it)
-    rng = np.random.default_rng(1)
-    rets = rng.normal(0.0015, 0.01, 1500).tolist()
-    bench = rng.normal(-0.0005, 0.012, 1500).tolist()
-    out = bootstrap_ci(rets, bench, n_boot=300)
-    assert out["ci"]["cagr"]["p05"] < out["ci"]["cagr"]["p95"]
-    # deterministic
-    out2 = bootstrap_ci(rets, bench, n_boot=300)
-    assert out == out2
-    # a clearly better series should beat the bench with high probability
-    assert out["p_beats_bench"]["sharpe"] > 0.7
-    with pytest.raises(ValueError):
-        bootstrap_ci(rets, bench[:-1], n_boot=10)
 
 
 def test_synth_trend_fills_missing_convexity():
