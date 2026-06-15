@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convex Core — An Intuitive Tutorial</title>
+<style>
+  :root{
+    --eq:#1f77b4; --cx:#e8730c; --dur:#2ca02c; --mkt:#9aa3ad; --ink:#1a2230;
+    --bg:#f6f8fb; --card:#ffffff; --line:#dfe5ec; --accent:#c0392b; --muted:#5b6675;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.62;margin:0;padding:0 18px 80px}
+  .wrap{max-width:860px;margin:0 auto}
+  header{padding:38px 0 14px;border-bottom:3px solid var(--eq)}
+  .kick{letter-spacing:2px;text-transform:uppercase;font-size:11px;color:var(--eq);font-weight:700}
+  h1{font-size:30px;margin:6px 0 6px;line-height:1.15}
+  h2{font-size:21px;margin:42px 0 10px;color:#143d66;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:16px;margin:24px 0 6px;color:#143d66}
+  .sub{color:var(--muted);font-size:15px}
+  p{margin:10px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:18px 0;
+        box-shadow:0 1px 3px rgba(20,40,80,.05)}
+  .fig{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 8px;margin:18px 0}
+  .fig svg{width:100%;height:auto;display:block}
+  .cap{font-size:12.5px;color:var(--muted);margin:8px 2px 4px;text-align:center}
+  .key{background:#eef7f0;border-left:4px solid var(--dur);padding:12px 16px;border-radius:8px;margin:16px 0;font-size:15px}
+  .note{background:#fff7ed;border-left:4px solid var(--cx);padding:12px 16px;border-radius:8px;margin:16px 0;font-size:14.5px}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#143d66;color:#fff;font-weight:600}
+  td.c,th.c{text-align:center}
+  code{background:#eef;border-radius:4px;padding:1px 6px;font-size:13px}
+  .eqbox{font-size:20px;text-align:center;margin:14px 0;font-weight:600}
+  .pill{display:inline-block;border-radius:6px;padding:2px 9px;color:#fff;font-weight:600;font-size:14px}
+  .p-eq{background:var(--eq)} .p-cx{background:var(--cx)} .p-dur{background:var(--dur)}
+  /* allocation bar */
+  .alloc{display:flex;height:46px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin:6px 0}
+  .alloc div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
+  /* diverging attribution bars */
+  .attr{margin:10px 0}
+  .attr .row{display:grid;grid-template-columns:120px 1fr 64px;align-items:center;gap:8px;margin:5px 0;font-size:13.5px}
+  .attr .track{position:relative;height:22px;background:#f0f3f7;border-radius:4px}
+  .attr .mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c2cad4}
+  .attr .bar{position:absolute;top:3px;height:16px;border-radius:3px}
+  .attr .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  .good{color:var(--dur)} .bad{color:var(--accent)}
+  .matrix td{text-align:center;font-weight:600}
+  .m-help{background:#e4f3e6;color:#1d6b2a} .m-hurt{background:#fbe4e2;color:#a5281e} .m-flat{background:#f0f1f3;color:#5b6675}
+  .foot{font-size:12px;color:var(--muted);border-top:1px solid var(--line);margin-top:36px;padding-top:12px}
+  a{color:var(--eq)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kick">DNSR Models · Educational Tutorial</div>
+  <h1>Convex Core, from the word up</h1>
+  <div class="sub">What “convex” means, how it lives inside
+    <code>w_equity + w_convexity + w_duration = 1</code>, and why these specific ETFs.</div>
+</header>
+
+<!-- ───────────────────────── 1. CONVEX ───────────────────────── -->
+<h2>1 · Start with the word: <em>convex</em></h2>
+<p><b>Convex</b> just means <b>curved</b> — and in investing it means a payoff that curves
+<b>in your favor</b>: you give up only a little when you’re wrong, and the protection grows
+fastest exactly when you need it most. The opposite of a straight line.</p>
+
+<p>“Own the market” (buy-and-hold) is a <b>straight line</b>: if the market falls 37%, you
+fall 37%. Convex Core deliberately <b>bends that line</b> so a 37% market crash costs you a
+fraction of that — while you keep most of the upside. That bend is the whole idea.</p>
+
+<div class="fig">
+<svg viewBox="0 0 620 400" role="img" aria-label="Payoff curve: linear buy-and-hold vs convex">
+  <!-- axes -->
+  <line x1="70" y1="40" x2="70" y2="330" stroke="#c2cad4"/>
+  <line x1="70" y1="185" x2="590" y2="185" stroke="#c2cad4"/>
+  <!-- axis ticks/labels -->
+  <text x="330" y="372" font-size="12.5" fill="#5b6675" text-anchor="middle">Market return (the S&amp;P 500) →</text>
+  <text x="64" y="48" font-size="12" fill="#5b6675" text-anchor="end">+40%</text>
+  <text x="64" y="189" font-size="12" fill="#5b6675" text-anchor="end">0</text>
+  <text x="64" y="330" font-size="12" fill="#5b6675" text-anchor="end">−40%</text>
+  <text x="86" y="183" font-size="11.5" fill="#9aa3ad" text-anchor="start">−40%</text>
+  <text x="566" y="200" font-size="11.5" fill="#9aa3ad" text-anchor="end">+40%</text>
+  <text x="40" y="36" font-size="12.5" fill="#5b6675">Your return ↑</text>
+  <!-- shaded convexity benefit on the downside (between line and curve) -->
+  <path d="M70,330 L89.5,318.6 L135,294 L200,257 L265,221 L330,185
+           L330,177.75 L265,179.6 L200,182.1 L135,185 L89.5,188.6 L70,194.1 Z"
+        fill="#e9b400" opacity="0.16"/>
+  <!-- linear buy-and-hold (45°) -->
+  <line x1="70" y1="330" x2="590" y2="40" stroke="#9aa3ad" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="556" y="58" font-size="12.5" fill="#7c8794" text-anchor="end">buy &amp; hold (linear)</text>
+  <!-- convex core curve: small slope in the left tail, steeper on the right -->
+  <path d="M70,194.1 L89.5,188.6 L135,185 L200,182.1 L265,179.6 L330,177.75
+           L395,165.1 L460,141.5 L525,116.1 L590,90.75"
+        fill="none" stroke="#c0392b" stroke-width="3"/>
+  <text x="582" y="86" font-size="12.5" fill="#c0392b" text-anchor="end" font-weight="700">Convex Core</text>
+  <!-- GFC marker -->
+  <circle cx="89.5" cy="188.6" r="5" fill="#c0392b"/>
+  <line x1="89.5" y1="188.6" x2="89.5" y2="318.6" stroke="#c0392b" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="89.5" cy="318.6" r="3.5" fill="#9aa3ad"/>
+  <text x="100" y="150" font-size="12" fill="#c0392b">2008: market −37%…</text>
+  <text x="100" y="166" font-size="12" fill="#c0392b" font-weight="700">…Convex Core ≈ −1%</text>
+</svg>
+<div class="cap"><b>Figure 1.</b> The straight grey line is buy-and-hold. The red curve is Convex Core.
+On the <b>downside (left)</b> the curve lifts away from the line — that gold gap is the
+<b>convexity</b>: crash protection that grows as the crash deepens. On the upside it gives up a
+little. (Illustrative shape; the 2008 point −37%→≈−1% is the real backtest.)</div>
+</div>
+
+<div class="key"><b>The intuition in one line:</b> a straight line treats a −37% crash and a −5%
+dip the same way (proportionally). A <b>convex</b> payoff fights <em>hardest</em> in the deep
+left tail — exactly where buy-and-hold hurts most.</div>
+
+<h3>Why the tail is worth obsessing over</h3>
+<p>Losses are <b>asymmetric</b>: the gain you need to recover grows much faster than the loss.
+Lose 20% and you need +25% back. Lose 50% and you need <b>+100%</b>. Avoiding the deep holes
+matters more for long-run wealth than catching every last rally.</p>
+
+<div class="fig">
+<svg viewBox="0 0 620 300" role="img" aria-label="Drawdown vs gain needed to recover">
+  <line x1="70" y1="30" x2="70" y2="250" stroke="#c2cad4"/>
+  <line x1="70" y1="250" x2="590" y2="250" stroke="#c2cad4"/>
+  <text x="330" y="288" font-size="12.5" fill="#5b6675" text-anchor="middle">Drawdown (how far you fell) →</text>
+  <text x="40" y="26" font-size="12.5" fill="#5b6675">Gain needed to get back ↑</text>
+  <!-- curve: recovery = dd/(1-dd). x: 0..-60% over 70..590 ; y: 0..150% over 250..30 -->
+  <!-- points: dd, gain%  -> x=70+ (dd/60)*520 ; y=250 - (gain/150)*220 -->
+  <path d="M70,250 L156,222 L243,189 L286,168 L330,140 L373,103 L417,58 L460,30"
+        fill="none" stroke="#c0392b" stroke-width="3"/>
+  <!-- markers -->
+  <circle cx="330" cy="140" r="4.5" fill="#143d66"/><text x="338" y="135" font-size="12" fill="#143d66">−37% needs +59%</text>
+  <circle cx="373" cy="103" r="4.5" fill="#143d66"/><text x="381" y="98" font-size="12" fill="#143d66">−43% needs +75%</text>
+  <circle cx="417" cy="58" r="4.5" fill="#c0392b"/><text x="300" y="56" font-size="12" fill="#c0392b" font-weight="700">SPY 2008 ≈ −55% needs +122%</text>
+  <!-- convex core point -->
+  <circle cx="226" cy="195" r="4.5" fill="#2ca02c"/><text x="234" y="208" font-size="12" fill="#2ca02c" font-weight="700">Convex Core −18% needs only +22%</text>
+</svg>
+<div class="cap"><b>Figure 2.</b> Recovery math is convex too. A buy-and-hold investor down 55% (SPY,
+2008–09) needs +122% just to break even; Convex Core’s worst drawdown of ~−18% needs only +22%.</div>
+</div>
+
+<!-- ───────────────────────── 2. THE EQUATION ───────────────────────── -->
+<h2>2 · How that bend lives in the equation</h2>
+<div class="eqbox">
+  <span class="pill p-eq">w_equity</span> +
+  <span class="pill p-cx">w_convexity</span> +
+  <span class="pill p-dur">w_duration</span> = 1
+</div>
+<p>This is a <b>budget</b>. Every dollar is fully invested (the weights sum to 1 — Convex Core is
+long-only, no leverage), and it splits across <b>three jobs</b>:</p>
+
+<table>
+<tr><th>Term</th><th>Its job</th><th>Shape</th></tr>
+<tr><td><span class="pill p-eq">w_equity</span></td>
+    <td><b>Participate.</b> Own the market so you compound with it (~73% of years are up).</td>
+    <td><b>Linear</b> — this is the straight line.</td></tr>
+<tr><td><span class="pill p-cx">w_convexity</span></td>
+    <td><b>Profit from chaos.</b> Trend-following that goes short falling assets — it <em>pays</em>
+        in sustained crashes.</td>
+    <td><b>Convex</b> — bends up in big moves.</td></tr>
+<tr><td><span class="pill p-dur">w_duration</span></td>
+    <td><b>Catch the flight-to-quality.</b> Treasuries that rally when scared money flees stocks.</td>
+    <td><b>Convex (conditionally)</b> — the deflation hedge.</td></tr>
+</table>
+
+<p>So the bend in Figure 1 isn’t magic — it’s <b>two of the three terms</b>. The equity term is the
+straight line; <b>w_convexity + w_duration are the hedges that bend it upward in the tail.</b></p>
+
+<div class="card">
+<h3>The canonical split (the model’s a-priori default)</h3>
+<div class="alloc">
+  <div class="p-eq" style="width:65%">equity&nbsp;0.65</div>
+  <div class="p-cx" style="width:15%">cvx&nbsp;0.15</div>
+  <div class="p-dur" style="width:20%">duration&nbsp;0.20</div>
+</div>
+<p style="font-size:14px;margin:8px 0 0"><b>Notice <code>w_duration</code> is the plug:</b> the model sets
+<code>w_equity</code> and <code>w_convexity</code>, and duration is simply
+<code>1 − w_equity − w_convexity</code> — whatever budget is left after participation and crisis-alpha.
+That’s why the equation is written the way it is: it’s a constraint, not three free choices.</p>
+</div>
+
+<div class="note"><b>Two dials sit on top of this static split:</b>
+<br>① <b>The glidepath</b> moves <code>w_equity</code> for your life-stage — 0.65 (balanced) up to
+<b>0.95</b> (accumulation, the accumulation-phase setting) and back down toward 0.65 as you near drawdown years.
+<br>② <b>The volatility brake</b> scales the equity exposure <em>down</em> automatically as markets get
+turbulent: <code>eq_scale = min(1, vol_target ÷ realized_vol)</code> with vol_target = 12%/yr.</div>
+
+<div class="fig">
+<svg viewBox="0 0 620 250" role="img" aria-label="Volatility brake">
+  <line x1="70" y1="30" x2="70" y2="200" stroke="#c2cad4"/>
+  <line x1="70" y1="200" x2="590" y2="200" stroke="#c2cad4"/>
+  <text x="330" y="236" font-size="12.5" fill="#5b6675" text-anchor="middle">Realized market volatility (annualized) →</text>
+  <text x="40" y="26" font-size="12.5" fill="#5b6675">Equity exposure (eq_scale) ↑</text>
+  <text x="64" y="44" font-size="12" fill="#5b6675" text-anchor="end">1.0</text>
+  <text x="64" y="124" font-size="12" fill="#5b6675" text-anchor="end">0.5</text>
+  <!-- flat at 1.0 until 12%, then 0.12/vol decay. x: 0..36% over 70..590 ; y:0..1 over 200..40 -->
+  <!-- 12% at x=70+(12/36)*520=243 ; flat y=40 -->
+  <line x1="70" y1="40" x2="243" y2="40" stroke="var(--eq)" stroke-width="3"/>
+  <!-- decay: vol 12->1.0(y40), 18->0.667(y93), 24->0.5(y120), 30->0.4(y136), 36->0.333(y147) -->
+  <path d="M243,40 L330,93 L417,120 L503,136 L590,147" fill="none" stroke="var(--eq)" stroke-width="3"/>
+  <line x1="243" y1="40" x2="243" y2="200" stroke="#c0392b" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="248" y="58" font-size="12" fill="#c0392b">vol_target = 12%</text>
+  <text x="585" y="172" font-size="12" fill="var(--eq)" text-anchor="end">calmer → full equity · stormier → trimmed</text>
+</svg>
+<div class="cap"><b>Figure 3.</b> The brake. While realized volatility is at or below the 12% target the
+portfolio holds full equity; once volatility spikes, equity is scaled back proportionally — in
+<em>days</em>, with no forecast required. (A confirmatory hard cap of 0.70 applies in liquidity-stress regimes.)</div>
+</div>
+
+<!-- ───────────────────────── 3. THE ETFs ───────────────────────── -->
+<h2>3 · How the specific ETFs fit each term</h2>
+<p>Each term is filled by instruments chosen for the <em>shape</em> they contribute — not for a
+return forecast.</p>
+
+<table>
+<tr><th style="width:130px">Term</th><th>ETFs</th><th>Why it has that shape</th></tr>
+<tr>
+  <td><span class="pill p-eq">equity 0.65</span></td>
+  <td><b>SPY</b> core (60% of the sleeve) + up to 5 <b>IC-scored factor/sector tilts</b> (40%) — currently
+      <b>VLUE · XLK · MTUM · PDBC · USO</b>, with a guaranteed value slot.</td>
+  <td>SPY <b>is</b> the straight line — broad market participation. The tilts lean toward factors the
+      panel measures as currently rewarded; a de-dup guard stops near-twins (e.g. it keeps no-K-1 PDBC
+      over DBC).</td>
+</tr>
+<tr>
+  <td><span class="pill p-cx">convexity 0.15</span></td>
+  <td><b>DBMF</b> (50%) · <b>KMLM</b> (30%) · <b>BTAL</b> (20%). Before these funds existed, the model
+      uses a point-in-time proxy basket <b>TLT / GLD / DBC</b> (what trend-followers actually hold).</td>
+  <td>DBMF &amp; KMLM are <b>managed-futures / trend-following</b> — they go <em>short</em> assets that are
+      falling, so a sustained crash is their best environment. That is a <b>literally convex</b> payoff: a
+      small bleed in calm chop, a big positive when a trend (up <em>or</em> down) persists. BTAL is
+      long-low-beta / short-high-beta — it rises when the market falls.</td>
+</tr>
+<tr>
+  <td><span class="pill p-dur">duration 0.20</span></td>
+  <td>Regime-switched: <b>neutral</b> → IEF 60 / BIL 40 · <b>risk-off rally</b> → TLT 50 / IEF 40 / BIL 10 ·
+      <b>inflation</b> → VTIP 50 / BIL 30 / IEF 20.</td>
+  <td>Treasuries are the classic <b>flight-to-quality</b> asset — they rally when investors flee stocks
+      (2008, 2020). The model lengthens duration (TLT) when that hedge is working and switches to
+      <b>TIPS (VTIP)</b> when inflation would make nominal bonds <em>fail</em> (2022).</td>
+</tr>
+</table>
+
+<div class="fig">
+<svg viewBox="0 0 620 280" role="img" aria-label="Convexity sleeve smile">
+  <line x1="70" y1="30" x2="70" y2="210" stroke="#c2cad4"/>
+  <line x1="70" y1="150" x2="590" y2="150" stroke="#c2cad4"/>
+  <text x="330" y="262" font-size="12.5" fill="#5b6675" text-anchor="middle">Market move (either direction) →</text>
+  <text x="40" y="26" font-size="12.5" fill="#5b6675">Trend-sleeve return ↑</text>
+  <text x="60" y="154" font-size="12" fill="#5b6675" text-anchor="end">0</text>
+  <!-- smile: positive on both big-move ends, small negative in the calm middle -->
+  <path d="M70,55 L160,95 L250,132 L330,165 L410,132 L500,95 L590,55"
+        fill="none" stroke="var(--cx)" stroke-width="3"/>
+  <text x="120" y="48" font-size="12" fill="var(--cx)">big down move → profit</text>
+  <text x="470" y="48" font-size="12" fill="var(--cx)" text-anchor="end">big up move → profit</text>
+  <text x="330" y="188" font-size="12" fill="#9aa3ad" text-anchor="middle">calm / choppy → small cost (the “insurance premium”)</text>
+</svg>
+<div class="cap"><b>Figure 4.</b> The convexity sleeve on its own. Trend-following has a <b>smile</b>: it pays in
+big sustained moves (its best case is a crash) and costs a small premium in flat, directionless markets —
+the textbook shape of <em>positive convexity</em>, like owning a straddle.</div>
+</div>
+
+<!-- ───────────────────────── 4. WHY THREE ───────────────────────── -->
+<h2>4 · Why <em>two</em> hedges, not one</h2>
+<p>The single most important design decision: <b>no one hedge works in every crisis.</b> Bonds are a
+brilliant hedge — until inflation, when they crash <em>with</em> stocks (2022). Trend-following is a
+brilliant hedge — but needs a <em>sustained</em> move to work. Hold both, and at least one is firing in
+almost every kind of selloff.</p>
+
+<table class="matrix">
+<tr><th>Crisis type</th><th class="c"><span class="pill p-eq">Equity</span></th>
+    <th class="c"><span class="pill p-cx">Convexity (trend)</span></th>
+    <th class="c"><span class="pill p-dur">Duration (bonds)</span></th></tr>
+<tr><td><b>2008</b> — deflationary deleveraging</td>
+    <td class="m-hurt">crashed</td><td class="m-help">helped</td><td class="m-help">helped a lot</td></tr>
+<tr><td><b>2020</b> — COVID liquidity shock</td>
+    <td class="m-hurt">crashed</td><td class="m-flat">mixed</td><td class="m-help">helped</td></tr>
+<tr><td><b>2022</b> — inflation / rate shock</td>
+    <td class="m-hurt">fell</td><td class="m-help">helped a lot</td><td class="m-hurt">fell too</td></tr>
+</table>
+<div class="cap" style="text-align:left">Read it across each row: there’s always a green cell. <b>2022 is the
+proof</b> — bonds failed, but the trend sleeve carried the protection. A bonds-only “60/40” had no green
+that year; Convex Core did.</div>
+
+<!-- ───────────────────────── 5. IN ACTION ───────────────────────── -->
+<h2>5 · The convexity, measured (not asserted)</h2>
+<p>First, the whole 20-year picture — Figure 1’s bend, realized. <b>$1 invested in 2006 ends up in about the
+same place</b> (SPY $8.50, Convex Core $7.87) — but watch the path through 2008–09:</p>
+
+<div class="fig">
+<svg viewBox="0 0 700 372" role="img" aria-label="Growth of $1: Convex Core vs SPY, 2006–2026, log scale">
+  <g stroke="#e6ebf1" stroke-width="1">
+    <line x1="70" y1="252.3" x2="600" y2="252.3"/><line x1="70" y1="187.5" x2="600" y2="187.5"/>
+    <line x1="70" y1="122.8" x2="600" y2="122.8"/><line x1="70" y1="58.1" x2="600" y2="58.1"/>
+  </g>
+  <g font-size="11" fill="#9aa3ad" text-anchor="end">
+    <text x="64" y="256">$1</text><text x="64" y="191">$2</text><text x="64" y="126">$4</text><text x="64" y="62">$8</text>
+  </g>
+  <g font-size="11" fill="#9aa3ad" text-anchor="middle">
+    <text x="70" y="318">2006</text><text x="170" y="318">2010</text><text x="275" y="318">2014</text>
+    <text x="380" y="318">2018</text><text x="484" y="318">2022</text><text x="589" y="318">2026</text>
+  </g>
+  <text x="36" y="36" font-size="12" fill="#5b6675">Growth of $1 (log)</text>
+  <line x1="78" y1="48" x2="102" y2="48" stroke="#c0392b" stroke-width="2.4"/>
+  <text x="108" y="52" font-size="12" fill="#c0392b" font-weight="700">Convex Core</text>
+  <line x1="218" y1="48" x2="242" y2="48" stroke="#9aa3ad" stroke-width="2"/>
+  <text x="248" y="52" font-size="12" fill="#7c8794">S&amp;P 500 (SPY)</text>
+  <line x1="388" y1="48" x2="412" y2="48" stroke="#2f8fbf" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <text x="418" y="52" font-size="12" fill="#2773a0">60/40 (SPY/IEF)</text>
+  <path fill="none" stroke="#2f8fbf" stroke-width="1.8" stroke-dasharray="5 4" d="M70.0,251.0 L72.0,250.6 L74.2,250.1 L76.4,251.9 L78.6,251.6 L80.7,250.8 L82.9,248.9 L85.1,247.0 L87.3,245.0 L89.5,243.4 L91.6,243.1 L93.8,242.4 L96.1,242.8 L98.1,242.2 L100.3,239.5 L102.4,238.1 L104.6,239.1 L106.8,240.0 L109.0,238.5 L111.2,236.3 L113.3,235.2 L115.5,235.8 L117.7,236.4 L119.9,238.6 L122.1,239.5 L124.2,239.5 L126.4,237.9 L128.5,237.7 L130.7,242.2 L132.9,242.4 L135.1,241.0 L137.3,246.4 L139.5,256.5 L141.7,257.0 L143.8,254.2 L146.0,260.8 L148.2,267.1 L150.2,261.6 L152.4,257.2 L154.6,254.6 L156.8,254.8 L158.9,250.4 L161.2,248.0 L163.4,245.6 L165.5,246.8 L167.7,242.7 L169.9,243.2 L172.1,244.3 L174.3,242.5 L176.3,239.6 L178.5,238.1 L180.6,241.5 L182.9,243.1 L185.0,239.0 L187.2,240.3 L189.4,235.5 L191.6,233.4 L193.8,233.7 L195.9,231.2 L198.1,229.8 L200.3,228.0 L202.3,228.0 L204.6,225.8 L206.7,225.5 L208.9,226.6 L211.0,226.5 L213.3,227.7 L215.5,230.4 L217.6,224.6 L219.8,224.7 L222.0,223.4 L224.2,220.4 L226.4,218.4 L228.5,217.2 L230.7,216.6 L232.8,218.8 L235.0,216.9 L237.2,215.7 L239.4,214.3 L241.6,213.0 L243.7,214.2 L246.0,213.5 L248.1,213.4 L250.3,211.0 L252.5,209.9 L254.5,207.7 L256.7,206.1 L258.9,205.9 L261.1,207.6 L263.2,204.9 L265.4,207.1 L267.7,204.7 L269.8,201.8 L272.0,200.5 L274.1,199.7 L276.4,200.6 L278.6,198.0 L280.6,197.8 L282.8,197.1 L284.9,195.1 L287.1,194.1 L289.3,194.9 L291.5,192.0 L293.7,193.2 L295.8,191.3 L298.1,189.3 L300.2,189.4 L302.4,189.5 L304.6,187.4 L306.6,188.0 L308.8,187.6 L311.0,187.1 L313.2,188.8 L315.3,187.0 L317.5,190.5 L319.8,191.2 L321.9,186.8 L324.1,186.8 L326.3,187.9 L328.5,189.6 L330.7,189.0 L332.8,185.5 L335.0,185.3 L337.1,184.4 L339.3,183.1 L341.5,181.0 L343.7,181.3 L345.9,181.2 L348.0,182.7 L350.2,182.2 L352.4,181.1 L354.6,180.0 L356.8,177.6 L358.8,177.5 L361.0,176.5 L363.2,175.4 L365.4,175.3 L367.5,174.0 L369.7,173.3 L371.9,172.7 L374.1,171.4 L376.3,169.8 L378.4,169.1 L380.6,166.7 L382.9,169.2 L384.9,170.3 L387.1,170.5 L389.2,168.8 L391.4,168.4 L393.6,166.5 L395.8,164.4 L398.0,164.5 L400.1,168.5 L402.3,167.0 L404.5,170.8 L406.7,166.2 L408.9,164.5 L410.9,162.5 L413.1,160.4 L415.3,163.0 L417.5,158.8 L419.6,157.9 L421.8,157.4 L424.0,156.8 L426.2,155.5 L428.4,153.7 L430.5,152.3 L432.8,151.1 L435.0,154.4 L437.0,159.6 L439.3,152.1 L441.4,149.1 L443.6,148.1 L445.7,144.5 L448.0,140.9 L450.2,143.0 L452.3,145.0 L454.5,139.0 L456.7,136.9 L458.9,138.0 L461.1,137.3 L463.1,135.5 L465.3,132.2 L467.4,131.7 L469.7,130.1 L471.8,128.0 L474.0,126.5 L476.2,129.8 L478.4,126.1 L480.6,126.1 L482.7,123.7 L484.9,127.5 L487.1,129.3 L489.1,128.8 L491.4,135.5 L493.5,135.2 L495.7,140.1 L497.9,134.1 L500.1,137.9 L502.3,145.2 L504.4,141.3 L506.6,136.9 L508.8,140.8 L511.0,136.1 L513.2,138.7 L515.2,135.3 L517.4,134.2 L519.6,134.4 L521.8,131.3 L523.9,129.7 L526.1,130.9 L528.3,134.8 L530.5,136.8 L532.7,130.2 L534.8,126.3 L537.0,125.4 L539.3,123.2 L541.3,121.1 L543.5,124.6 L545.7,121.1 L547.9,118.7 L550.0,117.0 L552.2,115.2 L554.5,113.5 L556.6,115.3 L558.8,111.6 L561.0,113.8 L563.2,112.1 L565.4,111.8 L567.4,114.8 L569.6,114.9 L571.7,111.9 L573.9,108.5 L576.1,107.4 L578.3,105.6 L580.5,103.4 L582.7,101.8 L584.9,101.4 L587.0,101.6 L589.2,100.9 L591.4,100.4 L593.4,104.1 L595.6,98.5 L597.8,95.5 L600.0,98.2"/>
+  <path fill="none" stroke="#9aa3ad" stroke-width="2" d="M70.0,251.2 L72.2,249.6 L74.2,248.5 L76.6,251.3 L78.7,251.1 L80.9,250.7 L83.2,248.6 L85.2,246.2 L87.5,243.3 L89.7,241.4 L91.8,240.2 L94.1,238.8 L96.1,240.6 L98.3,239.6 L100.5,235.5 L102.7,232.4 L104.8,233.8 L107.1,236.7 L109.3,235.5 L111.3,232.0 L113.6,230.7 L115.8,234.4 L118.0,235.5 L120.2,241.3 L122.3,243.8 L124.5,244.6 L126.7,240.2 L128.8,238.8 L131.0,247.0 L133.3,247.8 L135.3,246.4 L137.6,255.6 L139.8,272.5 L141.8,279.3 L144.2,278.3 L146.3,286.3 L148.4,297.0 L150.6,289.5 L152.8,280.6 L154.9,275.3 L157.2,275.4 L159.4,268.7 L161.6,265.3 L163.7,262.0 L165.9,263.8 L168.1,258.3 L170.3,256.5 L172.4,259.9 L174.4,257.1 L176.8,251.6 L178.9,250.1 L180.9,257.9 L183.3,262.8 L185.4,256.6 L187.7,260.9 L189.9,252.9 L191.9,249.4 L194.2,249.4 L196.4,243.4 L198.7,241.2 L200.7,238.1 L202.9,238.0 L205.0,235.4 L207.2,236.4 L209.4,238.0 L211.5,239.9 L213.8,245.2 L216.0,251.9 L218.2,242.2 L220.3,242.6 L222.5,241.6 L224.8,237.4 L226.8,233.4 L229.0,230.5 L231.2,231.1 L233.4,236.9 L235.5,233.2 L237.8,232.1 L240.0,229.8 L242.0,227.4 L244.4,229.1 L246.5,228.6 L248.7,227.8 L251.0,223.1 L253.0,221.9 L255.0,218.5 L257.3,216.7 L259.5,214.5 L261.5,215.8 L263.9,211.0 L266.1,213.9 L268.3,211.0 L270.5,206.8 L272.6,204.0 L274.9,201.6 L277.1,205.0 L279.1,200.8 L281.3,200.1 L283.4,199.4 L285.6,197.3 L287.8,195.4 L290.0,196.6 L292.1,193.0 L294.4,194.3 L296.6,192.1 L298.6,189.6 L301.0,189.8 L303.1,192.6 L305.1,187.5 L307.4,189.0 L309.6,188.1 L311.6,186.9 L313.9,188.8 L316.1,186.7 L318.4,192.6 L320.5,195.0 L322.7,187.4 L324.9,187.1 L327.1,188.7 L329.2,193.5 L331.4,193.5 L333.6,187.5 L335.7,187.1 L338.0,185.5 L340.1,185.2 L342.2,181.8 L344.6,181.7 L346.7,181.7 L348.9,183.4 L351.1,180.0 L353.2,178.1 L355.5,176.4 L357.5,172.8 L359.7,172.7 L361.7,171.8 L364.1,170.5 L366.2,169.9 L368.5,168.0 L370.7,167.7 L372.7,165.9 L375.0,163.7 L377.2,160.9 L379.3,159.8 L381.6,154.6 L383.6,158.1 L385.7,160.7 L388.0,160.2 L390.2,158.0 L392.3,157.4 L394.6,154.0 L396.8,151.1 L398.8,150.5 L401.2,157.2 L403.3,155.5 L405.5,164.1 L407.7,156.9 L409.7,153.9 L411.8,152.3 L414.1,148.5 L416.3,154.7 L418.3,148.4 L420.7,147.0 L422.8,148.6 L425.1,146.8 L427.3,144.7 L429.3,141.4 L431.6,138.7 L433.9,138.8 L435.9,146.5 L438.1,158.9 L440.3,147.8 L442.4,143.4 L444.7,141.8 L446.9,136.4 L449.1,130.1 L451.2,133.7 L453.4,136.1 L455.6,126.4 L457.8,123.0 L459.9,124.0 L461.9,121.4 L464.3,117.3 L466.4,112.5 L468.4,111.8 L470.8,109.8 L472.9,107.5 L475.2,104.8 L477.4,109.2 L479.4,102.9 L481.7,103.7 L483.9,99.4 L486.2,104.5 L488.2,107.3 L490.4,103.8 L492.5,112.4 L494.7,112.2 L496.9,120.3 L499.0,112.0 L501.3,115.9 L503.5,125.0 L505.7,117.7 L507.8,112.6 L510.0,118.2 L512.3,112.5 L514.3,114.8 L516.5,111.4 L518.5,110.0 L520.9,109.5 L523.0,103.7 L525.2,100.7 L527.4,102.2 L529.5,106.7 L531.8,108.8 L534.0,100.6 L536.0,96.4 L538.4,95.0 L540.5,90.2 L542.5,87.2 L544.8,91.1 L547.1,86.5 L549.1,83.2 L551.4,82.1 L553.6,79.9 L555.8,78.0 L558.0,78.8 L560.1,73.4 L562.4,75.7 L564.6,73.2 L566.6,74.4 L568.8,79.8 L570.9,80.6 L573.1,74.9 L575.3,70.2 L577.5,68.1 L579.6,66.2 L581.9,62.9 L584.1,60.7 L586.1,60.5 L588.5,60.5 L590.6,59.1 L592.6,59.9 L594.9,64.6 L597.1,55.3 L599.1,50.5 L600.0,52.3"/>
+  <path fill="none" stroke="#c0392b" stroke-width="2.3" d="M70.0,252.3 L72.2,250.3 L74.2,247.7 L76.6,251.4 L78.7,250.9 L80.9,249.9 L83.2,248.6 L85.2,247.2 L87.5,244.5 L89.7,242.4 L91.8,240.8 L94.1,239.6 L96.1,241.5 L98.3,241.0 L100.5,238.2 L102.7,235.4 L104.8,236.6 L107.1,238.9 L109.3,238.4 L111.3,234.8 L113.6,231.6 L115.8,234.4 L118.0,233.8 L120.2,235.5 L122.3,235.0 L124.5,235.5 L126.7,233.7 L128.8,230.6 L131.0,232.8 L133.3,235.8 L135.3,237.2 L137.6,241.2 L139.8,247.3 L141.8,240.8 L144.2,234.3 L146.3,241.2 L148.4,244.2 L150.6,242.0 L152.8,240.2 L154.9,236.6 L157.2,238.3 L159.4,234.8 L161.6,232.9 L163.7,230.9 L165.9,233.9 L168.1,227.9 L170.3,227.7 L172.4,231.1 L174.4,229.0 L176.8,224.2 L178.9,222.4 L180.9,227.0 L183.3,228.5 L185.4,226.7 L187.7,228.0 L189.9,222.9 L191.9,219.3 L194.2,218.3 L196.4,212.5 L198.7,212.0 L200.7,207.4 L202.9,207.2 L205.0,203.2 L207.2,206.5 L209.4,209.2 L211.5,209.4 L213.8,211.2 L216.0,209.9 L218.2,207.6 L220.3,207.2 L222.5,206.3 L224.8,204.0 L226.8,201.0 L229.0,197.8 L231.2,198.2 L233.4,203.4 L235.5,200.8 L237.8,199.5 L240.0,197.9 L242.0,195.6 L244.4,197.3 L246.5,197.3 L248.7,197.1 L251.0,193.0 L253.0,192.1 L255.0,188.8 L257.3,186.7 L259.5,185.5 L261.5,186.4 L263.9,182.8 L266.1,186.2 L268.3,183.7 L270.5,179.8 L272.6,177.3 L274.9,175.6 L277.1,178.9 L279.1,175.4 L281.3,175.6 L283.4,174.7 L285.6,173.2 L287.8,171.3 L290.0,172.8 L292.1,170.0 L294.4,171.9 L296.6,171.3 L298.6,168.8 L301.0,168.5 L303.1,170.0 L305.1,167.0 L307.4,167.7 L309.6,167.0 L311.6,166.4 L313.9,167.8 L316.1,165.8 L318.4,171.8 L320.5,171.8 L322.7,169.0 L324.9,169.9 L327.1,171.2 L329.2,173.2 L331.4,172.4 L333.6,168.1 L335.7,166.2 L338.0,167.2 L340.1,163.8 L342.2,161.6 L344.6,165.2 L346.7,164.5 L348.9,167.2 L351.1,165.9 L353.2,164.7 L355.5,162.5 L357.5,160.4 L359.7,161.0 L361.7,160.6 L364.1,158.5 L366.2,158.5 L368.5,156.5 L370.7,155.8 L372.7,155.3 L375.0,152.8 L377.2,150.8 L379.3,150.1 L381.6,146.1 L383.6,150.7 L385.7,151.9 L388.0,151.6 L390.2,150.5 L392.3,150.1 L394.6,148.7 L396.8,146.5 L398.8,145.9 L401.2,151.9 L403.3,151.4 L405.5,155.1 L407.7,151.8 L409.7,150.0 L411.8,148.2 L414.1,145.9 L416.3,149.3 L418.3,145.4 L420.7,143.7 L422.8,142.1 L425.1,143.0 L427.3,141.4 L429.3,140.8 L431.6,138.3 L433.9,137.7 L435.9,142.0 L438.1,143.4 L440.3,140.4 L442.4,137.5 L444.7,138.2 L446.9,133.3 L449.1,128.2 L451.2,132.6 L453.4,135.5 L455.6,130.7 L457.8,127.8 L459.9,128.9 L461.9,125.4 L464.3,122.9 L466.4,118.7 L468.4,115.9 L470.8,115.1 L472.9,113.1 L475.2,112.0 L477.4,114.6 L479.4,108.9 L481.7,112.1 L483.9,108.2 L486.2,110.0 L488.2,109.7 L490.4,105.6 L492.5,108.0 L494.7,106.9 L496.9,110.0 L499.0,106.7 L501.3,108.9 L503.5,113.3 L505.7,109.1 L507.8,106.5 L510.0,110.0 L512.3,106.6 L514.3,110.6 L516.5,110.5 L518.5,109.2 L520.9,111.7 L523.0,107.2 L525.2,104.4 L527.4,105.8 L529.5,109.2 L531.8,111.3 L534.0,105.7 L536.0,102.6 L538.4,100.9 L540.5,96.2 L542.5,93.1 L544.8,96.7 L547.1,92.9 L549.1,91.2 L551.4,91.1 L553.6,91.4 L555.8,89.4 L558.0,90.4 L560.1,87.7 L562.4,90.8 L564.6,88.4 L566.6,89.4 L568.8,90.7 L570.9,91.9 L573.1,91.3 L575.3,88.0 L577.5,86.3 L579.6,81.5 L581.9,75.1 L584.1,73.0 L586.1,70.2 L588.5,67.2 L590.6,61.6 L592.6,58.1 L594.9,66.2 L597.1,58.9 L599.1,56.8 L600.0,59.6"/>
+  <line x1="148.4" y1="244.2" x2="148.4" y2="297" stroke="#c0392b" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <circle cx="148.4" cy="297" r="3.5" fill="#9aa3ad"/><circle cx="148.4" cy="244.2" r="3.5" fill="#c0392b"/>
+  <text x="158" y="234" font-size="11.5" fill="#c0392b" font-weight="700">Convex ≈ flat</text>
+  <text x="158" y="290" font-size="11.5" fill="#7c8794">SPY −58% → $0.62</text>
+  <text x="158" y="304" font-size="11" fill="#9aa3ad">(2009 bottom)</text>
+  <circle cx="600" cy="52.3" r="3" fill="#9aa3ad"/><circle cx="600" cy="59.6" r="3" fill="#c0392b"/>
+  <text x="608" y="50" font-size="11.5" fill="#7c8794">SPY $8.50</text>
+  <text x="608" y="66" font-size="11.5" fill="#c0392b" font-weight="700">Convex $7.87</text>
+  <circle cx="600" cy="98.2" r="3" fill="#2f8fbf"/>
+  <text x="608" y="101" font-size="11.5" fill="#2773a0">60/40 $5.21</text>
+</svg>
+<div class="cap"><b>Figure 5.</b> Growth of $1, 2006→2026, <b>log scale</b> (the published backtest, net of modeled
+costs). Convex Core reaches about the same place as SPY ($7.87 vs $8.50) — but at the 2009 bottom the S&amp;P
+had lost ~58% (down to $0.62) while Convex Core had barely moved ($1.09). <b>That gap is the convexity of
+Figure 1, lived out:</b> comparable compounding, a far smoother ride (max drawdown ~−18% vs SPY’s ~−55%). The
+classic <b>60/40 (SPY/IEF)</b> balanced portfolio is shown for reference — a smoother ride than SPY, but it
+gives up a lot of the destination ($5.21).</div>
+</div>
+
+<p>The backtest also decomposes each crisis into how much each sleeve contributed — Figure 1’s bend, in
+numbers:</p>
+
+<div class="card">
+<h3>2022 — stocks <em>and</em> bonds fell together</h3>
+<div class="attr">
+  <div class="row"><div><span class="pill p-eq">equity</span></div>
+    <div class="track"><div class="mid"></div><div class="bar bad" style="right:50%;width:26%;background:var(--accent)"></div></div>
+    <div class="val bad">−6.5%</div></div>
+  <div class="row"><div><span class="pill p-cx">convexity</span></div>
+    <div class="track"><div class="mid"></div><div class="bar good" style="left:50%;width:18%;background:var(--dur)"></div></div>
+    <div class="val good">+4.5%</div></div>
+  <div class="row"><div><span class="pill p-dur">duration</span></div>
+    <div class="track"><div class="mid"></div><div class="bar bad" style="right:50%;width:6.4%;background:var(--accent)"></div></div>
+    <div class="val bad">−1.6%</div></div>
+</div>
+<p style="font-size:14px;margin:6px 0 0">The trend sleeve (<b>+4.5%</b>) did exactly its job in the one year
+the bond hedge couldn’t — it short-sold the very assets that were falling.</p>
+</div>
+
+<div class="card">
+<h3>2008 — the global financial crisis</h3>
+<div class="attr">
+  <div class="row"><div><span class="pill p-eq">equity</span></div>
+    <div class="track"><div class="mid"></div><div class="bar bad" style="right:50%;width:42%;background:var(--accent)"></div></div>
+    <div class="val bad">−20.4%</div></div>
+  <div class="row"><div><span class="pill p-dur">duration*</span></div>
+    <div class="track"><div class="mid"></div><div class="bar good" style="left:50%;width:34%;background:var(--dur)"></div></div>
+    <div class="val good">+8.6%</div></div>
+</div>
+<p style="font-size:14px;margin:6px 0 0">Net result: the S&amp;P 500 fell about <b>−37%</b>; Convex Core fell
+about <b>−1%</b> — the dot on Figure 1. <span style="color:var(--muted)">*Managed-futures funds didn’t exist
+yet, so the convexity sleeve point-in-time folds into the duration/trend proxy.</span></p>
+</div>
+
+<!-- ───────────────────────── 6. THE REGIME ENGINE ───────────────────────── -->
+<h2>6 · The regime engine — reading the market’s weather</h2>
+<p>You’ve seen two parts of the model move on their own: the <b>duration sleeve changes flavor</b>
+(Section 3) and equity gets <b>capped in a crisis</b>. A small, transparent classifier decides which
+“weather” we’re in and drives those changes. It emits <b>one</b> primary state plus independent <b>tags</b> —
+all computed point-in-time from local data, no forecasts.</p>
+
+<h3>① It picks one state, by precedence</h3>
+<p>Five mutually-exclusive states are checked <b>top to bottom</b>. The first one whose conditions <em>all</em>
+hold wins — so <b>stress always wins</b>, and “neutral” is the fallback when the signals disagree.</p>
+
+<div class="fig" style="padding:16px 18px">
+  <div style="border-left:6px solid #c0392b;background:#fbe9e7;padding:9px 13px;border-radius:7px;margin:7px 0;font-size:13.5px">
+    <b style="color:#a5281e">LIQUIDITY_STRESS</b> — VIX jumping into its top 20% + high-yield cracking vs quality bonds + SPY under its 50/200-day averages
+    &nbsp;→&nbsp; <b>cap equity at ≤0.70× &amp; most-defensive bonds</b></div>
+  <div style="border-left:6px solid #e8730c;background:#fff2e6;padding:9px 13px;border-radius:7px;margin:7px 0;font-size:13.5px">
+    <b style="color:#b85c08">RISK_OFF</b> — SPY below its 200-day, 50-day below 200-day (downtrend), VIX in its top 30%, credit deteriorating
+    &nbsp;→&nbsp; <b>lengthen duration (TLT)</b></div>
+  <div style="border-left:6px solid #e1a100;background:#fff8e1;padding:9px 13px;border-radius:7px;margin:7px 0;font-size:13.5px">
+    <b style="color:#9a7400">RECOVERY</b> — recently fell below the averages but is reclaiming them, VIX falling from an elevated level
+    &nbsp;→&nbsp; <b>begin re-risking</b></div>
+  <div style="border-left:6px solid #2ca02c;background:#eaf7ea;padding:9px 13px;border-radius:7px;margin:7px 0;font-size:13.5px">
+    <b style="color:#1d6b2a">RISK_ON</b> — SPY above a rising 200-day, positive 63-day return, VIX below its median, breadth &gt;50% above the 200-day
+    &nbsp;→&nbsp; <b>full equity, neutral bonds</b></div>
+  <div style="border-left:6px solid #8a94a3;background:#f1f3f6;padding:9px 13px;border-radius:7px;margin:7px 0;font-size:13.5px">
+    <b style="color:#5b6675">RISK_NEUTRAL</b> <span style="color:#8a94a3">(residual)</span> — mixed signals
+    &nbsp;→&nbsp; <b>the default; neutral bonds</b></div>
+  <div class="cap"><b>Figure 6.</b> The precedence ladder. Checked top-down, first match wins. The order encodes a
+  bias: it’s quick to get defensive (stress &amp; risk-off sit at the top) and slower to re-risk (recovery must
+  prove itself).</div>
+</div>
+
+<h3>② What it reads — four families of signals</h3>
+<p>Every condition is just a fact about <em>today’s</em> tape, seen through four lenses:</p>
+<table class="matrix">
+<tr><th style="width:150px">Lens</th><th>The actual inputs</th><th>What it tells you</th></tr>
+<tr><td>🌡️ <b>Volatility / fear</b></td><td>VIX 20-day change, its 252-day percentile, VIX vs its own median</td>
+    <td style="text-align:left">Is fear spiking — and how extreme is it versus the last year?</td></tr>
+<tr><td>💳 <b>Credit</b></td><td>HYG vs LQD relative strength (20- &amp; 63-day)</td>
+    <td style="text-align:left">Junk bonds underperforming quality = credit stress building <em>before</em> stocks crack</td></tr>
+<tr><td>📈 <b>Trend / structure</b></td><td>SPY vs its 50- &amp; 200-day moving averages; 63-day return</td>
+    <td style="text-align:left">Is price above or below trend, and rising or falling?</td></tr>
+<tr><td>📊 <b>Breadth</b></td><td>% of stocks above their own 200-day MA</td>
+    <td style="text-align:left">Is the move broad, or a handful of names carrying a thin market?</td></tr>
+</table>
+<div class="note"><b>Graceful degradation.</b> If a signal is temporarily missing, its clause just drops — but a
+state still needs <b>≥3 live clauses</b> to qualify, so a blind input can never silently flip the regime.</div>
+
+<h3>③ It refuses to flap — a 3-day confirmation</h3>
+<p>A new state only takes effect after its conditions hold <b>three sessions in a row</b>. A one-day scare can’t
+whipsaw the whole book.</p>
+<div class="fig" style="padding:16px 18px">
+  <div style="font-size:12.5px;color:#5b6675;margin-bottom:3px">raw daily read →</div>
+  <div style="display:flex;gap:3px">
+    <span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c" title="1-day blip"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span></div>
+  <div style="font-size:12.5px;color:#5b6675;margin:10px 0 3px">acted-on state →</div>
+  <div style="display:flex;gap:3px">
+    <span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#2ca02c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span><span style="flex:1;height:22px;border-radius:3px;background:#e8730c"></span></div>
+  <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#9aa3ad;margin-top:5px">
+    <span>◆ day-6 blip ignored (only 1 day)</span><span>3 confirming days → flips here ◆</span></div>
+  <div class="cap"><b>Figure 7.</b> Hysteresis. <span style="color:#2ca02c">■ RISK_ON</span> /
+  <span style="color:#e8730c">■ RISK_OFF</span>. The raw read can flicker; the <b>acted-on</b> state only changes
+  after 3 straight confirming sessions — so one noisy day costs nothing.</div>
+</div>
+
+<h3>④ What it actually does</h3>
+<p>The regime never touches the equity/convexity/duration <b>budget</b> — it retunes the <b>duration flavor</b>
+and, in stress, caps equity. The same 20% duration sleeve wears a different outfit:</p>
+<div class="fig" style="padding:16px 18px">
+  <div style="font-size:13px;font-weight:600;color:#143d66;margin-bottom:2px">RISK_NEUTRAL / RISK_ON → neutral ladder</div>
+  <div class="alloc" style="height:34px"><div class="p-dur" style="width:60%">IEF 60</div><div style="width:40%;background:#7c8794;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">BIL 40</div></div>
+  <div style="font-size:13px;font-weight:600;color:#143d66;margin:10px 0 2px">RISK_OFF / risk-off rally → lengthen for flight-to-quality</div>
+  <div class="alloc" style="height:34px"><div style="width:50%;background:#15598c;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">TLT 50</div><div class="p-dur" style="width:40%">IEF 40</div><div style="width:10%;background:#7c8794"></div></div>
+  <div style="font-size:13px;font-weight:600;color:#143d66;margin:10px 0 2px">INFLATION_STRESS tag → switch to TIPS (the 2022 fix)</div>
+  <div class="alloc" style="height:34px"><div style="width:50%;background:#8e44ad;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">VTIP 50</div><div style="width:30%;background:#7c8794;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px">BIL 30</div><div class="p-dur" style="width:20%">IEF 20</div></div>
+  <div class="cap"><b>Figure 8.</b> The duration sleeve morphs by regime — nominal Treasuries when bonds are a good
+  hedge, <b>inflation-protected (VTIP)</b> when they aren’t (2022). LIQUIDITY_STRESS additionally hard-caps the
+  equity sleeve at 0.70× on top of the volatility brake.</div>
+</div>
+
+<p>Five orthogonal <b>overlay tags</b> flag specific weather independently of the primary state — any can be on
+at once:</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">
+  <span style="background:#8e44ad;color:#fff;border-radius:6px;padding:4px 11px;font-size:13px;font-weight:600">INFLATION_STRESS</span>
+  <span style="background:#15598c;color:#fff;border-radius:6px;padding:4px 11px;font-size:13px;font-weight:600">DURATION_RALLY</span>
+  <span style="background:#2ca02c;color:#fff;border-radius:6px;padding:4px 11px;font-size:13px;font-weight:600">DEFENSIVE_ROTATION</span>
+  <span style="background:#c0392b;color:#fff;border-radius:6px;padding:4px 11px;font-size:13px;font-weight:600">DOLLAR_STRESS</span>
+  <span style="background:#e8730c;color:#fff;border-radius:6px;padding:4px 11px;font-size:13px;font-weight:600">COMMODITY_STRENGTH</span>
+</div>
+<p style="font-size:14px">e.g. <b>INFLATION_STRESS</b> fires when energy/materials lead, long bonds are weak, and breakevens are
+rising — exactly the signal that flips the bond hedge to TIPS.</p>
+
+<div class="key"><b>Honest caveat — the regime layer is a refinement, not the engine.</b> In walk-forward testing,
+turning it <em>fully off</em> moves Sortino only <b>1.08 → 1.06</b>. The <b>volatility brake</b> (Figure 3) — which
+reacts in <em>days</em> with no classification lag — does most of the de-risking; the regime layer’s job is the
+finer one: pick the right <em>kind</em> of bond hedge and add the liquidity-stress cap. It’s kept because it’s
+cheap, transparent and robust — not because it carries the result.</div>
+
+<!-- ───────────────────────── 7. HOW IT CAME TO BE ───────────────────────── -->
+<h2>7 · So how did the equation come to be?</h2>
+<p>It’s the shortest expression of four beliefs, each backed by published evidence:</p>
+<ol>
+  <li><b>Own the market.</b> Stocks drift up over time, so the core must always participate →
+      a <b>w_equity</b> term that never exits.</li>
+  <li><b>Drawdowns, not volatility, destroy compounding.</b> A −50% hole needs +100% back (Figure 2) →
+      spend part of the budget on <b>crash insurance</b>, not on chasing a bit more return.</li>
+  <li><b>No single hedge is enough</b> (Section 4) → split the insurance into <b>two</b> orthogonal
+      convex sleeves: trend-following (<b>w_convexity</b>) and Treasuries (<b>w_duration</b>).</li>
+  <li><b>Don’t overfit.</b> The weights are frozen a-priori (0.65 / 0.15 / 0.20), not optimized to the
+      past; only the glidepath dial and the mechanical vol-brake move. Because the three must fully invest
+      one dollar, they <b>sum to 1</b>, and duration takes the residual.</li>
+</ol>
+<p>Put together: <code>w_equity</code> gives you the upside line; <code>w_convexity + w_duration</code> bend
+it up in the tail; the brake trims equity when storms hit. The result is the asymmetric, <b>convex</b>
+payoff of Figure 1 — keep most of the upside, lose far less of the downside.</p>
+
+<div class="key"><b>One-sentence summary:</b> Convex Core owns the market with most of its money, then spends
+the rest on two different kinds of crash insurance that each pay off in a different kind of crisis — so the
+portfolio’s return curve <b>bends in your favor</b> exactly when it matters.</div>
+
+<!-- ───────────────────────── 8. THE EQUITY CORE ───────────────────────── -->
+<h2>8 · An open question — could the equity core be different?</h2>
+<p>The equity sleeve is <b>SPY plus a measured tilt overlay</b> (Section 3). A natural question: should the
+core be something else — total-market <b>VTI</b>, international <b>VXUS</b>, small-cap <b>IWM</b> — and should it
+lean by <b>valuation / CAPE</b> when the U.S. looks expensive? It’s worth being precise here, because the model
+already has an opinion.</p>
+
+<table>
+<tr><th style="width:90px">Candidate</th><th>What it is</th><th>Valuation lean</th><th>How Convex Core already reaches it</th></tr>
+<tr><td><b>SPY</b></td><td>S&amp;P 500 — large-cap U.S. (today’s base)</td><td>The expensive end (elevated CAPE)</td>
+    <td>It <em>is</em> the core — the “straight line” of Figure 1.</td></tr>
+<tr><td><b>VTI</b></td><td>Total U.S. market (adds mid/small)</td><td>≈ SPY (large-caps dominate the cap-weight)</td>
+    <td>Negligible difference — historically tracks SPY within noise.</td></tr>
+<tr><td><b>VXUS</b></td><td>Total international ex-U.S.</td><td>Cheaper (lower CAPE), currency + diversification</td>
+    <td>The <code>intl_equity</code> tilt sleeve — added <em>when its score earns a slot</em>, not as a fixed bet.</td></tr>
+<tr><td><b>IWM</b></td><td>Russell 2000 small-caps</td><td>Cheaper / value-ish, higher volatility</td>
+    <td>Factor exposure comes through the scored tilts (e.g. MTUM, VLUE) — more surgical than a blanket small-cap bet.</td></tr>
+</table>
+
+<div class="note"><b>What CAPE is.</b> The Shiller CAPE divides price by the last 10 years of <em>real</em>
+earnings — a valuation gauge. A high CAPE has historically meant <em>lower</em> 10-year forward returns. The
+U.S. (SPY) has sat at an elevated CAPE for years while international, value and small-cap have looked cheaper —
+which is the whole case for a valuation tilt.</div>
+
+<p>So why is the core still SPY? Two honest reasons, both from this project’s own research:</p>
+<div class="key" style="border-left-color:var(--accent);background:#fdecea">
+  <b>① We tested CAPE timing — it didn’t earn its keep.</b> A full CAPE-driven allocation (best config: a
+  rolling-30-year baseline + a trend tilt) reached a Sharpe of about <b>0.78</b> — well short of Convex Core’s
+  <b>1.32</b>. CAPE tells you about <em>long-run expected return</em>, not <em>when</em> to act; as a timing
+  signal it’s weak and slow (decade horizon, enormous noise).<br><br>
+  <b>② “Cheap” stayed cheap.</b> “Tilt to the cheapest market” has been a <em>losing</em> trade for ~15 years —
+  the U.S. has been the expensive one the whole time and kept winning. And a separate universe-refresh
+  experiment found that swapping in more/younger funds mostly adds <b>overfitting surface, not edge</b>
+  (verdict: <i>don’t modernize</i>).
+</div>
+
+<div class="key"><b>The model’s answer is already a valuation tilt — just a measured one.</b> Instead of
+hard-coding VXUS or IWM, the IC-scored overlay leans toward international, value or small-cap <em>exactly when
+the data rewards it</em>, with a guaranteed value slot and a de-dup guard. A <b>static CAPE/valuation overlay</b>
+is a fair candidate for a <em>pre-registered, gated experiment</em> — it would have to beat the current tilt net
+of costs and survive walk-forward before it ships — not a default change. That’s the same parameter-minimal,
+prove-it-or-publish-the-negative-result discipline behind every other knob in the model. <span
+style="color:var(--muted)">(This applies identically to Convex Prime, which runs the same equity sleeve,
+levered.)</span></div>
+
+<div class="foot">
+Educational illustration of the DNSR Convex Core model. Shapes in Figures 1, 3 and 4 are conceptual; the
+crisis attribution (Section 5), the 0.65/0.15/0.20 split, the ETFs, and the vol-brake formula are from the
+model engine and the published backtest. <b>Hypothetical, backtested performance — not investment advice;
+past performance does not guarantee future results.</b> Full method + significance testing in the Convex
+Core paper (the `paper/` directory of this repository). © 2026 DNSR Investments, LLC.
+</div>
+</div>
+</body>
+</html>

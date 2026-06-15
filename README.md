@@ -16,6 +16,26 @@ directed and reviewed by the principal, who is responsible for its use.
 
 ---
 
+## Tutorials — start here for intuition
+
+Two self-contained, visual explainers (inline-SVG charts, zero dependencies) that build an
+intuitive understanding of the models *before* the formal paper:
+
+- **[Convex Core — an intuitive tutorial](tutorial/convex_tutorial.html)** — what *convex*
+  means, how it lives inside `w_equity + w_convexity + w_duration = 1`, the specific ETFs, the
+  regime engine, a 20-year growth-of-$1 chart vs SPY and 60/40, and the equity-core options
+  (SPY / VTI / VXUS / IWM, CAPE / valuation).
+- **[Convex Prime — the leveraged sibling](tutorial/prime_tutorial.html)** — what leverage does
+  to a convex payoff, how it’s sized / capped / sentiment-gated, and the honest risk/reward trade.
+
+> GitHub serves `.html` as source. To **read them rendered**, open the files in any browser, or
+> use the htmlpreview proxy —
+> [▶ Core](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/convex_tutorial.html)
+> · [▶ Prime](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/prime_tutorial.html).
+> Educational illustrations of the model — *not investment advice*.
+
+---
+
 ## Why this repo exists
 
 The paper’s central claim is methodological: a deterministic, auditable, reproducible
@@ -30,6 +50,7 @@ computed result artifacts, and the tests — everything except the licensed vend
 | Path | Contents |
 |---|---|
 | `paper/` | The report (PDF + self-contained HTML) and the **Statistical-Robustness Addendum** — Deflated Sharpe Ratio & Probability of Backtest Overfitting (PDF + HTML). |
+| `tutorial/` | **Visual, intuitive tutorials** — `convex_tutorial.html` (Convex Core) and `prime_tutorial.html` (Convex Prime). Self-contained HTML with inline-SVG figures. See [Tutorials](#tutorials--start-here-for-intuition) above. |
 | `engine/tradeclassifier/` | The deterministic model engine — `convex_core.py` (the flagship) and the shared point-in-time alpha/beta/regime panel it depends on (`alpha_backtest`, `alpha`, `beta`, `features`, `optimizer`, `loaders`, `objective`, `regime`, `config`). **Zero fitted parameters; no LLM in the allocation math.** |
 | `config/` | Model + regime configuration (`regime_rules.yaml`, `ira_profile.yaml`, etc.). The regime clause set is reproduced verbatim in the paper’s Appendix I. |
 | `report/` | `pub_benchmarks.py` (benchmark construction + metrics + bootstrap significance), `build_pub_report.py` (assembles the paper), `run_tier2.py` (sleeve ablations + crisis attribution), `run_regime_wf.py` (regime walk-forward validation), `run_dsr_pbo.py` (deflated-Sharpe + backtest-overfitting diagnostics), `build_addendum.py` (assembles the addendum). |
