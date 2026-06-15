@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Convex Core — A Derivation from First Principles</title>
+<style>
+  :root{
+    --eq:#1f77b4; --cx:#e8730c; --dur:#2ca02c; --mkt:#9aa3ad; --ink:#1a2230;
+    --bg:#f6f8fb; --card:#ffffff; --line:#dfe5ec; --accent:#c0392b; --muted:#5b6675;
+  }
+  *{box-sizing:border-box}
+  body{font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.62;margin:0;padding:0 18px 80px}
+  .wrap{max-width:860px;margin:0 auto}
+  header{padding:38px 0 14px;border-bottom:3px solid var(--eq)}
+  .kick{letter-spacing:2px;text-transform:uppercase;font-size:11px;color:var(--eq);font-weight:700}
+  h1{font-size:30px;margin:6px 0 6px;line-height:1.15}
+  h2{font-size:21px;margin:42px 0 10px;color:#143d66;border-bottom:1px solid var(--line);padding-bottom:6px}
+  h3{font-size:16px;margin:24px 0 6px;color:#143d66}
+  .sub{color:var(--muted);font-size:15px}
+  p{margin:10px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:18px 0;
+        box-shadow:0 1px 3px rgba(20,40,80,.05)}
+  .key{background:#eef7f0;border-left:4px solid var(--dur);padding:12px 16px;border-radius:8px;margin:16px 0;font-size:15px}
+  .note{background:#fff7ed;border-left:4px solid var(--cx);padding:12px 16px;border-radius:8px;margin:16px 0;font-size:14.5px}
+  .eq{background:#f3f6fa;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:16px 0;
+      text-align:center;font-size:19px;font-family:'Cambria Math','Times New Roman',Georgia,serif;color:#10243b}
+  .eq .lab{float:right;color:var(--muted);font-size:12px;font-family:-apple-system,Segoe UI,sans-serif;margin-top:5px}
+  var,.v{font-family:'Cambria Math','Times New Roman',Georgia,serif;font-style:italic}
+  .small{font-size:13px;color:var(--muted)}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#eef3f8;color:#143d66;font-weight:600}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;color:#fff}
+  .tag.rig{background:var(--dur)} .tag.des{background:var(--cx)}
+  .refs{font-size:13px;color:var(--muted)} .refs li{margin:4px 0}
+  .foot{margin-top:30px;border-top:1px solid var(--line);padding-top:12px;font-size:12px;color:var(--muted)}
+  a{color:var(--eq)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kick">DNSR Investments · Quantitative Research</div>
+  <h1>Convex Core — A Derivation from First Principles</h1>
+  <div class="sub">How the allocation equation <span class="v">w</span><sub>eq</sub> + <span class="v">w</span><sub>cvx</sub> + <span class="v">w</span><sub>dur</sub> = 1 and the volatility brake follow from one objective: maximizing long-horizon compound growth.</div>
+</header>
+
+<div class="card">
+<b>What this is — and isn't.</b> Convex Core was originally <i>authored from empirical evidence</i> (the 2026-06-11 design spec, built from the day's backtests). This note shows that the <i>same</i> equation is what a first-principles argument recommends — so the theory and the empirics agree, which is the strongest position to be in. It is a principled justification, <b>not a uniqueness proof</b>: the derivation terminates in a small number of named design choices, and we mark each as <span class="tag rig">rigorous</span> or <span class="tag des">design choice</span> so the reader can see exactly where judgment enters.
+</div>
+
+<h2>Step 0 — The objective: maximize <i>geometric</i> growth</h2>
+<p>Terminal wealth is multiplicative, so the correct objective is not the arithmetic mean return but the expected log-growth rate:</p>
+<div class="eq">g = 𝔼[ ln(1 + <span class="v">R</span>) ] <span class="lab">long-run growth</span></div>
+<p>To second order (a Taylor / Itô expansion in <span class="v">R</span>):</p>
+<div class="eq">g ≈ μ − ½ σ² <span class="lab">μ = 𝔼[R], σ² = Var(R)</span></div>
+<div class="key"><b>This one line drives the entire model.</b> Variance is a <i>direct subtraction</i> from compound growth. Reducing σ² raises <span class="v">g</span> <i>even if it lowers</i> the arithmetic mean μ — so "give up ≤1%/yr of arithmetic return to cut risk" is not risk-aversion, it is <b>growth-optimal</b>. <span class="tag rig">rigorous</span></div>
+<p>Drawdowns sharpen the point. Recovering from a loss of size <span class="v">d</span> requires a gain of</p>
+<div class="eq"><span class="v">d</span> / (1 − <span class="v">d</span>) &nbsp;&gt;&nbsp; <span class="v">d</span> <span class="lab">−50% needs +100%</span></div>
+<p>so recovery is <b>convex</b> in the loss, and negative skew (left-tail losses) makes the realized drag <i>worse</i> than the symmetric ½σ² term suggests. The quantity to minimize is therefore not total variance but specifically the <b>left-tail / drawdown variance</b>.</p>
+
+<h2>Step 1 — Why a <i>structural</i> allocation, not Markowitz</h2>
+<p>Classical mean–variance optimization solves for weights from (μ, Σ). It requires estimating expected returns μ — and the project's first empirical finding is that <b>μ is not forecastable</b> at useful precision on this universe (market-timing search returned negative; cross-sectional information coefficient ≈ 0.026). Under estimation error, mean–variance optimization is "error-maximizing" (Michaud): tiny μ-errors produce wildly unstable weights.</p>
+<p>The principled response is to <b>stop forecasting returns</b> and allocate by <i>role</i>, under the one constraint that needs no estimate — full investment, no leverage:</p>
+<div class="eq">Σ<sub><span class="v">i</span></sub> <span class="v">w</span><sub><span class="v">i</span></sub> = 1 <span class="lab">the budget constraint</span></div>
+<p>That is the left-hand side of the equation. The only open question is <i>what the roles are</i>. <span class="tag rig">rigorous, given the premise that μ is unforecastable</span></p>
+
+<h2>Step 2 — The three roles fall out of the risk decomposition</h2>
+<p>Exactly three functions are needed:</p>
+<ol>
+<li><b>Capture the one premium you believe in.</b> The equity risk premium is the only large, persistent, theory-backed expected return → an <b style="color:var(--eq)">equity core</b>, <span class="v">w</span><sub>eq</sub>.</li>
+<li><b>Hedge the left tail — but the tail has two regimes.</b> The stock–bond correlation is <i>regime-dependent</i>: Treasuries rally in growth-scare / deflationary crashes (2008, 2020) but fall <i>with</i> equities in inflation / rate-shock selloffs (2022). One hedge cannot cover both. The tail-hedge therefore splits into two orthogonal sleeves:
+  <ul>
+  <li><b style="color:var(--dur)">Duration</b>, <span class="v">w</span><sub>dur</sub> — carry/ballast that hedges the <i>deflationary</i> crash.</li>
+  <li><b style="color:var(--cx)">Crisis-convexity</b>, <span class="v">w</span><sub>cvx</sub> — a long-volatility, trend-following / anti-beta sleeve that hedges the <i>inflationary / momentum-crash</i> regime duration misses.</li>
+  </ul>
+</li>
+</ol>
+<p>Three terms, summing to one:</p>
+<div class="eq"><span style="color:var(--eq)"><span class="v">w</span><sub>eq</sub></span> + <span style="color:var(--cx)"><span class="v">w</span><sub>cvx</sub></span> + <span style="color:var(--dur)"><span class="v">w</span><sub>dur</sub></span> = 1 <span class="lab">w<sub>dur</sub> = 1 − w<sub>eq</sub> − w<sub>cvx</sub> (the plug)</span></div>
+<div class="note"><b>Why "convex."</b> Trend-following has an <i>option-like, convex payoff</i> — Fung &amp; Hsieh (2001) showed it replicates <i>long lookback straddles</i>. Its return curve versus the equity factor <b>bends upward</b> in the tails, injecting the positive co-skew that directly attacks the left-tail variance from Step 0. The sleeve is the portfolio's "long-gamma" leg.</div>
+<p class="small"><span class="tag des">design choice</span> The principle <i>forces</i> "one premium sleeve + tail diversification"; choosing exactly <b>two</b> hedge sleeves for the two documented crash regimes is motivated by — not uniquely implied by — the argument. The 2022 attribution (convexity <b>+4.5</b> while duration <b>−1.6</b>) is the empirical confirmation that the two sleeves are genuinely orthogonal.</p>
+
+<h2>Step 3 — The volatility brake from the Kelly criterion</h2>
+<p>For the equity core, the log-optimal (Kelly) fraction in a risky asset with excess return <span class="v">X</span> ~ (μ<sub><span class="v">x</span></sub>, σ<sub><span class="v">x</span></sub>²) is</p>
+<div class="eq"><span class="v">f</span>* = μ<sub><span class="v">x</span></sub> / σ<sub><span class="v">x</span></sub>² <span class="lab">Kelly / log-optimal sizing</span></div>
+<p>Now apply the robust-estimation insight again. You cannot estimate μ<sub><span class="v">x</span></sub>, but the <b>Sharpe ratio</b> <span class="v">S</span> = μ<sub><span class="v">x</span></sub>/σ<sub><span class="v">x</span></sub> is far more stable, and — crucially — <b>volatility itself <i>is</i> forecastable</b> (volatility clustering; the most robust regularity in daily returns). Substituting <span class="v">S</span>:</p>
+<div class="eq"><span class="v">f</span>* = <span class="v">S</span> / σ<sub><span class="v">x</span></sub> &nbsp;∝&nbsp; 1 / σ<sub><span class="v">x</span></sub> <span class="lab">hold risk constant, not dollars</span></div>
+<p>i.e. scale exposure inversely with realized volatility. Impose the no-leverage constraint (<span class="v">f</span> ≤ the strategic weight) and you get a cap at 1 — exactly the brake:</p>
+<div class="eq" style="font-size:20px">eq_scale = min( 1, &nbsp;σ<sub>target</sub> / σ̂<sub>21d</sub> ) <span class="lab">the volatility brake</span></div>
+<div class="key">The brake is the <i>one</i> piece of timing that survives, because it conditions only on σ̂ (estimable from volatility clustering) and never on μ (which is not). It "responds in days, with no classification machinery." <span class="tag rig">rigorous, under "Sharpe more stable than the mean"</span></div>
+
+<h2>Step 4 — Freezing the parameters is implied, not bolted on</h2>
+<p>Because μ is unforecastable (Step 1), <i>any</i> in-sample optimization of the weights (<span class="v">w</span><sub>eq</sub>, <span class="v">w</span><sub>cvx</sub>, σ<sub>target</sub>, …) would fit noise and re-introduce exactly the instability the role-based design escaped. The growth-robust choice is to <b>freeze the five parameters at structurally reasonable values and let the structure, not the calibration, carry the result</b> — which makes the 21-year backtest out-of-sample by construction. "Zero fitting" is not a footnote; it is <i>required</i> by the same premise that produced the equation. <span class="tag rig">rigorous, given the premise</span> &nbsp; <span class="tag des">the specific values 0.65 / 0.15 / 0.20 are a design choice</span></p>
+
+<h2>Rigorous vs. design choice — at a glance</h2>
+<table>
+<tr><th>Result</th><th>Status</th></tr>
+<tr><td>g ≈ μ − ½σ² ⇒ minimize (left-tail) variance for growth</td><td><span class="tag rig">rigorous</span> — a math identity</td></tr>
+<tr><td>μ unforecastable ⇒ abandon mean–variance; allocate by role under Σw=1</td><td><span class="tag rig">rigorous</span> — given the empirical premise</td></tr>
+<tr><td>Kelly ⇒ vol-targeting min(1, σ<sub>target</sub>/σ̂)</td><td><span class="tag rig">rigorous</span> — under "Sharpe &gt; mean in stability"</td></tr>
+<tr><td>Three sleeves specifically (two crash regimes)</td><td><span class="tag des">design choice</span> — motivated, not forced</td></tr>
+<tr><td>The exact frozen weights 0.65 / 0.15 / 0.20</td><td><span class="tag des">design choice</span> — "freeze," not "freeze <i>here</i>"</td></tr>
+</table>
+
+<div class="key" style="font-size:15.5px"><b>The defensible one-liner.</b> The Convex Core equation is the form that <i>maximizing expected log-growth</i> implies once one accepts that <b>expected returns are not forecastable but volatility is</b>: a permanent premium-capturing core, a convex crisis hedge and a duration ballast for the two crash regimes, all sized by a Kelly-style volatility brake, with parameters frozen because optimizing them would re-create the very estimation error the structure exists to avoid.</div>
+
+<h2>Provenance &amp; references</h2>
+<p class="small">The mechanisms recombine well-published premia; the paper claims <b>no novel strategy</b>. To the authors' knowledge the specific three-sleeve, frozen-parameter formulation with the realized-volatility brake, as presented here, has not been previously published in this form.</p>
+<ul class="refs">
+<li>Kelly, J. L. (1956). <i>A New Interpretation of Information Rate.</i> — log-optimal growth.</li>
+<li>Markowitz (1952); Michaud (1989), <i>The Markowitz Optimization Enigma</i> — estimation error in MVO.</li>
+<li>Moreira &amp; Muir (2017), <i>Volatility-Managed Portfolios</i>; Harvey et al. (2018) — the volatility brake.</li>
+<li>Hurst, Ooi &amp; Pedersen (2017), <i>A Century of Evidence on Trend-Following</i> — crisis alpha.</li>
+<li>Fung &amp; Hsieh (2001), <i>The Risk in Hedge Fund Strategies</i> — trend-following as long lookback straddles (convexity).</li>
+<li>Frazzini &amp; Pedersen (2014), <i>Betting Against Beta</i> — the anti-beta / defensive sleeve.</li>
+</ul>
+
+<div class="foot">DNSR Investments, LLC · companion to the Convex Core white paper (§4 Model Philosophy). Hypothetical/backtested context; not investment advice. The portfolio math is fully deterministic — no large-language model participates in the allocation engine.</div>
+</div>
+</body>
+</html>

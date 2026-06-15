@@ -27,11 +27,15 @@ intuitive understanding of the models *before* the formal paper:
   (SPY / VTI / VXUS / IWM, CAPE / valuation).
 - **[Convex Prime — the leveraged sibling](tutorial/prime_tutorial.html)** — what leverage does
   to a convex payoff, how it’s sized / capped / sentiment-gated, and the honest risk/reward trade.
+- **[A derivation from first principles](DERIVATION.md)** ([HTML](tutorial/convex_derivation.html)) —
+  how the equation `w_equity + w_convexity + w_duration = 1` and the volatility brake follow from
+  maximizing expected log-growth, with each step marked *rigorous* or *design choice* (companion to §4.1).
 
 > GitHub serves `.html` as source. To **read them rendered**, open the files in any browser, or
 > use the htmlpreview proxy —
 > [▶ Core](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/convex_tutorial.html)
-> · [▶ Prime](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/prime_tutorial.html).
+> · [▶ Prime](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/prime_tutorial.html)
+> · [▶ Derivation](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/convex_derivation.html).
 > Educational illustrations of the model — *not investment advice*.
 
 ---
