@@ -88,9 +88,13 @@ construction. "Zero fitting" is *required* by the same premise that produced the
 > Kelly-style volatility brake, with parameters frozen because optimizing them would re-create the
 > estimation error the structure exists to avoid.
 
-The mechanisms recombine well-published premia; the paper claims **no novel strategy**. To the
-authors' knowledge the specific three-sleeve, frozen-parameter formulation with the
-realized-volatility brake, as presented here, has not been previously published in this form.
+The mechanisms recombine well-published premia, and the general combination — equity + trend
+crisis-alpha + bond ballast, de-risked by diversification and volatility scaling — is well
+established (Schwalbach et al. 2025, the nearest analog; the return-stacking literature; Standpoint;
+AQR defensive equity). The paper claims **no novel strategy**. To the authors' knowledge the specific
+*unlevered, fixed-weight* three-sleeve formulation with this realized-volatility brake and frozen
+parameters (and no option premium) has not been published as an integrated rule set; the distinct
+contribution is the integration and the research process, not the formula.
 
 ## References
 
