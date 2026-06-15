@@ -61,6 +61,40 @@
     <code>w_equity + w_convexity + w_duration = 1</code>, and why these specific ETFs.</div>
 </header>
 
+<!-- ───────────────────────── 0. WHY ───────────────────────── -->
+<h2>First — the problem we’re actually solving</h2>
+<p>Before the word and the equation, it’s worth being honest about why a long-term investor needs
+<i>anything</i> beyond &ldquo;buy good things and hold.&rdquo; Three problems push back on the simple answer.</p>
+
+<h3>1. Buy-and-hold wins on the chart, but you live on the <em>path</em></h3>
+<p>Over a long enough horizon, broad equities compound and buy-and-hold &ldquo;wins&rdquo; on paper. But you
+don’t get to live in the average — you live through the <b>path</b>. The S&amp;P fell about <b>−55%</b> in
+2008–09 and roughly <b>−50%</b> in the dot-com bust, and the arithmetic of digging out is brutal: a 50% loss
+needs a <b>+100%</b> gain just to get back to even. A long enough horizon survives that. The trouble is that most
+real money has a <i>shorter</i> effective horizon than the chart implies — because of the next two problems.</p>
+
+<h3>2. Sequence-of-returns risk — the <em>order</em> matters, not just the average</h3>
+<p>Two investors can earn the <i>exact same average return</i> and end up in completely different places if the
+<b>order</b> of those returns differs — especially once money is being withdrawn (retirement) or spent unevenly.
+A large loss <b>early</b> does far more damage than the same loss late, because it shrinks the base that everything
+afterward compounds on. Buy-and-hold has no defense against a bad sequence; it simply takes whatever order the
+market hands it. A −55% in the first year of drawing down is a different life than a −55% in year twenty.</p>
+<div class="key"><b>The first two together:</b> the goal isn’t just a high average return — it’s
+<b>protecting the path</b>, because deep drawdowns and bad sequences quietly do the real damage.</div>
+
+<h3>3. You can’t fix it by <em>predicting</em> — almost every fitted strategy fails</h3>
+<p>The obvious instinct is &ldquo;just get out before the crash.&rdquo; But strategies that try to <b>forecast</b>
+— by fitting parameters to history, optimizing on the backtest, or training a model to find &ldquo;the
+signal&rdquo; — almost all fall apart out of sample. Markets are <b>non-stationary</b> (the rules keep changing),
+the signal is weak, and tuning a model to the past is mostly just <b>overfitting</b> it. This isn’t a hunch: we
+tested it directly and ruled it out — machine-learning rankers, volatility forecasters, trend-clarity features,
+multi-strategy blends — <b>five pre-registered attempts, every one failed its honest baseline.</b> The lesson is
+not &ldquo;find a better crystal ball.&rdquo; It’s that <b>prediction is the wrong tool.</b></p>
+
+<div class="note"><b>So what’s left?</b> If you can’t reliably predict the crash, and you can’t afford to simply
+ride it, the move is to change the <b>shape</b> of your returns — make the crashes hurt less <i>without forecasting
+anything.</i> That shape has a name, and it’s the entire idea behind this model: <b>convexity.</b></div>
+
 <!-- ───────────────────────── 1. CONVEX ───────────────────────── -->
 <h2>1 · Start with the word: <em>convex</em></h2>
 <p><b>Convex</b> just means <b>curved</b> — and in investing it means a payoff that curves
@@ -181,7 +215,7 @@ That’s why the equation is written the way it is: it’s a constraint, not thr
 
 <div class="note"><b>Two dials sit on top of this static split:</b>
 <br>① <b>The glidepath</b> moves <code>w_equity</code> for your life-stage — 0.65 (balanced) up to
-<b>0.95</b> (accumulation, the accumulation-phase setting) and back down toward 0.65 as you near drawdown years.
+<b>0.95</b> (accumulation, the live IRA setting) and back down toward 0.65 as you near drawdown years.
 <br>② <b>The volatility brake</b> scales the equity exposure <em>down</em> automatically as markets get
 turbulent: <code>eq_scale = min(1, vol_target ÷ realized_vol)</code> with vol_target = 12%/yr.</div>
 
@@ -534,7 +568,7 @@ Educational illustration of the DNSR Convex Core model. Shapes in Figures 1, 3 a
 crisis attribution (Section 5), the 0.65/0.15/0.20 split, the ETFs, and the vol-brake formula are from the
 model engine and the published backtest. <b>Hypothetical, backtested performance — not investment advice;
 past performance does not guarantee future results.</b> Full method + significance testing in the Convex
-Core paper (the `paper/` directory of this repository). © 2026 DNSR Investments, LLC.
+Core paper (the 📕 / 📄 links on the model card). © 2026 DNSR Investments, LLC.
 </div>
 </div>
 </body>
