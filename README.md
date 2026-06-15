@@ -29,11 +29,11 @@ computed result artifacts, and the tests — everything except the licensed vend
 
 | Path | Contents |
 |---|---|
-| `paper/` | The report (PDF + self-contained HTML). |
+| `paper/` | The report (PDF + self-contained HTML) and the **Statistical-Robustness Addendum** — Deflated Sharpe Ratio & Probability of Backtest Overfitting (PDF + HTML). |
 | `engine/tradeclassifier/` | The deterministic model engine — `convex_core.py` (the flagship) and the shared point-in-time alpha/beta/regime panel it depends on (`alpha_backtest`, `alpha`, `beta`, `features`, `optimizer`, `loaders`, `objective`, `regime`, `config`). **Zero fitted parameters; no LLM in the allocation math.** |
 | `config/` | Model + regime configuration (`regime_rules.yaml`, `ira_profile.yaml`, etc.). The regime clause set is reproduced verbatim in the paper’s Appendix I. |
-| `report/` | `pub_benchmarks.py` (benchmark construction + metrics + bootstrap significance), `build_pub_report.py` (assembles the paper), `run_tier2.py` (sleeve ablations + crisis attribution), `run_regime_wf.py` (regime walk-forward validation). |
-| `results/` | Computed **model outputs** (not raw vendor data): `model_curves.json` (growth-of-$1 per model), `benchmarks.json`, `tier2.json`, `regime_wf.json`, `reproducibility_manifest.yaml`. These reproduce the paper’s tables/figures directly. |
+| `report/` | `pub_benchmarks.py` (benchmark construction + metrics + bootstrap significance), `build_pub_report.py` (assembles the paper), `run_tier2.py` (sleeve ablations + crisis attribution), `run_regime_wf.py` (regime walk-forward validation), `run_dsr_pbo.py` (deflated-Sharpe + backtest-overfitting diagnostics), `build_addendum.py` (assembles the addendum). |
+| `results/` | Computed **model outputs** (not raw vendor data): `model_curves.json` (growth-of-$1 per model), `benchmarks.json`, `tier2.json`, `regime_wf.json`, `dsr_pbo.json`, `reproducibility_manifest.yaml`. These reproduce the paper’s tables/figures (and the addendum) directly. |
 | `tests/` | `test_convex_core.py` — engine pins (vol brake, PIT fold, determinism, attribution non-invasiveness). |
 
 ## Data
@@ -56,6 +56,11 @@ pip install -r requirements.txt
 #       paper/DNSR_Convex_Core_Publication_REGENERATED.html
 python report/build_pub_report.py
 
+# (1b) Regenerate the Statistical-Robustness Addendum (DSR & PBO) from
+#      results/dsr_pbo.json — also NO vendor data required. Output:
+#        paper/DNSR_Convex_Core_Addendum_DSR_PBO_REGENERATED.html (+ .pdf)
+python report/build_addendum.py
+
 # (2) Run the engine unit tests (synthetic data, no warehouse needed):
 PYTHONPATH=engine pytest tests/
 
@@ -65,6 +70,7 @@ export PAPER_ROOT=$(pwd)
 python report/pub_benchmarks.py   # rebuilds results/benchmarks.json (+ bootstrap)
 python report/run_tier2.py        # sleeve ablations + crisis attribution
 python report/run_regime_wf.py    # regime walk-forward validation
+python report/run_dsr_pbo.py      # deflated Sharpe + backtest-overfitting (DSR/PBO)
 ```
 
 > **Reproducibility status.** Step (1) is self-contained and has been verified to regenerate

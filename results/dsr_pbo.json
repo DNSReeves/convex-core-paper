@@ -1,0 +1,183 @@
+{
+ "meta": {
+  "title": "Statistical-Robustness Addendum \u2014 DSR & PBO",
+  "relation": "companion addendum to the v1.0.2 paper (paper unchanged)",
+  "trial_set": "w_equity x vol_target config grid (the model's continuous dials)",
+  "w_equity_grid": [
+   0.65,
+   0.7,
+   0.75,
+   0.8,
+   0.85,
+   0.9,
+   0.95
+  ],
+  "vol_target_grid": [
+   0.1,
+   0.12,
+   0.14,
+   0.16
+  ],
+  "deployed": {
+   "w_equity": 0.95,
+   "vol_target": 0.12
+  },
+  "panel": {
+   "T_months": 245,
+   "N_trials": 28,
+   "start": "2006-02-28",
+   "end": "2026-06-30"
+  },
+  "risk_free": "none (raw Sharpe on monthly total returns; DSR/PBO are scale-free in rf)",
+  "references": [
+   "Bailey, D. & Lopez de Prado, M. (2014). The Deflated Sharpe Ratio. J. Portfolio Management.",
+   "Bailey, Borwein, Lopez de Prado & Zhu (2017). The Probability of Backtest Overfitting. J. Computational Finance."
+  ]
+ },
+ "dsr": {
+  "deployed_config": {
+   "w_equity": 0.95,
+   "vol_target": 0.12
+  },
+  "n_trials": 28,
+  "T_months": 245,
+  "sharpe_monthly": 0.2985117406859364,
+  "sharpe_annualized": 1.0340750030477348,
+  "skew": -0.3545355917791791,
+  "kurtosis": 2.8966013749383013,
+  "var_sharpe_across_trials": 6.28531889911278e-05,
+  "expected_max_sharpe_null_monthly": 0.016211157043496936,
+  "expected_max_sharpe_null_annualized": 0.056157095297629515,
+  "deflated_sharpe_ratio": 0.9999806807346697,
+  "psr_vs_zero": 0.999993248942636,
+  "min_track_record_length_months_95": 39.976668040214975,
+  "note": "DSR is P(true Sharpe > expected-max-Sharpe-under-the-null at N trials). >0.95 => the deployed Sharpe survives multiple-testing deflation."
+ },
+ "pbo": {
+  "method": "Combinatorially-Symmetric Cross-Validation (CSCV)",
+  "n_trials": 28,
+  "S_blocks": 16,
+  "block_len_months": 15,
+  "months_used": 240,
+  "n_splits": 12870,
+  "pbo": 0.5373737373737374,
+  "median_oos_rank_of_is_best": 0.4642857142857143,
+  "prob_oos_sharpe_below_zero": 0.0,
+  "oos_is_degradation_slope": -0.9565695579699587,
+  "note": "PBO = fraction of splits where the in-sample-best config lands below the out-of-sample median. <0.5 acceptable; the deterministic, a-priori design predicts a low value."
+ },
+ "trials": {
+  "we0.65_vt0.10": {
+   "sharpe_monthly": 0.3202835516063047,
+   "sharpe_annualized": 1.1094947684214562
+  },
+  "we0.65_vt0.12": {
+   "sharpe_monthly": 0.3219229411974343,
+   "sharpe_annualized": 1.1151737805519286
+  },
+  "we0.65_vt0.14": {
+   "sharpe_monthly": 0.3198925361542973,
+   "sharpe_annualized": 1.1081402511626137
+  },
+  "we0.65_vt0.16": {
+   "sharpe_monthly": 0.3213846982118495,
+   "sharpe_annualized": 1.1133092521562276
+  },
+  "we0.70_vt0.10": {
+   "sharpe_monthly": 0.3176647692080697,
+   "sharpe_annualized": 1.1004230400860362
+  },
+  "we0.70_vt0.12": {
+   "sharpe_monthly": 0.3182902327861125,
+   "sharpe_annualized": 1.1025897094769441
+  },
+  "we0.70_vt0.14": {
+   "sharpe_monthly": 0.31721294661088406,
+   "sharpe_annualized": 1.0988578806973697
+  },
+  "we0.70_vt0.16": {
+   "sharpe_monthly": 0.31864134889819196,
+   "sharpe_annualized": 1.1038060113678996
+  },
+  "we0.75_vt0.10": {
+   "sharpe_monthly": 0.31978061481026426,
+   "sharpe_annualized": 1.1077525442539806
+  },
+  "we0.75_vt0.12": {
+   "sharpe_monthly": 0.31304339656487784,
+   "sharpe_annualized": 1.084414135648602
+  },
+  "we0.75_vt0.14": {
+   "sharpe_monthly": 0.313982870995038,
+   "sharpe_annualized": 1.0876685705395004
+  },
+  "we0.75_vt0.16": {
+   "sharpe_monthly": 0.3133196535352593,
+   "sharpe_annualized": 1.0853711178658934
+  },
+  "we0.80_vt0.10": {
+   "sharpe_monthly": 0.3145164207533588,
+   "sharpe_annualized": 1.0895168411190557
+  },
+  "we0.80_vt0.12": {
+   "sharpe_monthly": 0.3095381525258281,
+   "sharpe_annualized": 1.0722716141114776
+  },
+  "we0.80_vt0.14": {
+   "sharpe_monthly": 0.30828523062178154,
+   "sharpe_annualized": 1.0679313653200284
+  },
+  "we0.80_vt0.16": {
+   "sharpe_monthly": 0.3091744577436956,
+   "sharpe_annualized": 1.0710117384292754
+  },
+  "we0.85_vt0.10": {
+   "sharpe_monthly": 0.3113879447631241,
+   "sharpe_annualized": 1.078679482388364
+  },
+  "we0.85_vt0.12": {
+   "sharpe_monthly": 0.30583016062661267,
+   "sharpe_annualized": 1.0594267533844879
+  },
+  "we0.85_vt0.14": {
+   "sharpe_monthly": 0.30448248308585857,
+   "sharpe_annualized": 1.0547582614388766
+  },
+  "we0.85_vt0.16": {
+   "sharpe_monthly": 0.3053200830296058,
+   "sharpe_annualized": 1.0576597927568507
+  },
+  "we0.90_vt0.10": {
+   "sharpe_monthly": 0.30539375729784707,
+   "sharpe_annualized": 1.0579150079084594
+  },
+  "we0.90_vt0.12": {
+   "sharpe_monthly": 0.3022415537620249,
+   "sharpe_annualized": 1.0469954545487747
+  },
+  "we0.90_vt0.14": {
+   "sharpe_monthly": 0.30102939310303034,
+   "sharpe_annualized": 1.0427964068521454
+  },
+  "we0.90_vt0.16": {
+   "sharpe_monthly": 0.3004801824637166,
+   "sharpe_annualized": 1.0408938853894478
+  },
+  "we0.95_vt0.10": {
+   "sharpe_monthly": 0.3038352838933291,
+   "sharpe_annualized": 1.0525162976707194
+  },
+  "we0.95_vt0.12": {
+   "sharpe_monthly": 0.2985117406859364,
+   "sharpe_annualized": 1.0340750030477348
+  },
+  "we0.95_vt0.14": {
+   "sharpe_monthly": 0.2992895994478145,
+   "sharpe_annualized": 1.0367695848411058
+  },
+  "we0.95_vt0.16": {
+   "sharpe_monthly": 0.2956328837099779,
+   "sharpe_annualized": 1.0241023499475665
+  }
+ }
+}

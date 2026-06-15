@@ -1,9 +1,9 @@
 {
   "title": "Convex Core and the DNSR Model Suite — Reproducibility Companion",
-  "description": "Companion code and computed artifacts for the research paper \"Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding\" (2026). Includes the deterministic model engine (zero fitted parameters; no large-language model in the portfolio math), the benchmark / report / Monte-Carlo / sleeve-ablation / regime-validation code, computed result artifacts from which the paper's tables and figures regenerate WITHOUT the licensed vendor data, and self-contained engine tests. The research was conducted by the DNSR Agentic AI system, directed and reviewed by the principal. Hypothetical, backtested performance — not investment advice; past performance does not guarantee future results. Licensing: code under PolyForm Noncommercial 1.0.0; paper and documentation under CC BY-NC 4.0.",
+  "description": "Companion code and computed artifacts for the research paper \"Convex Core and the DNSR Model Suite: A Deterministic ETF Allocation Framework for Drawdown-Controlled Compounding\" (2026). Includes the deterministic model engine (zero fitted parameters; no large-language model in the portfolio math), the benchmark / report / Monte-Carlo / sleeve-ablation / regime-validation code, computed result artifacts from which the paper's tables and figures regenerate WITHOUT the licensed vendor data, self-contained engine tests, and a Statistical-Robustness Addendum (Deflated Sharpe Ratio and Probability of Backtest Overfitting). The research was conducted by the DNSR Agentic AI system, directed and reviewed by the principal. Hypothetical, backtested performance — not investment advice; past performance does not guarantee future results. Licensing: code under PolyForm Noncommercial 1.0.0; paper and documentation under CC BY-NC 4.0.",
   "upload_type": "software",
   "access_right": "open",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "creators": [
     {"name": "Reeves, David", "affiliation": "DNSR Investments, LLC"},
     {"name": "DNSR Agentic AI system (Anthropic Fable 5 and Opus 4.8)"}
