@@ -38,6 +38,21 @@ intuitive understanding of the models *before* the formal paper:
 > · [▶ Derivation](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/tutorial/convex_derivation.html).
 > Educational illustrations of the model — *not investment advice*.
 
+## Backtest position ledger — the model's full evolution, 2006→present
+
+See *exactly* how Convex Core changed week by week — every ETF, its weight, the regime, the
+volatility brake, and growth-of-$1 vs SPY — across the entire backtest. The convexity sleeve, for
+instance, is empty in 2008 (those funds didn't exist yet — their weight folds into Treasuries),
+appears as BTAL by 2019, and is the full DBMF/KMLM/BTAL set by 2026. Point-in-time TARGET weights,
+suggest-only.
+
+- **[Backtest position ledger — Convex Core](results/backtest_ledger_convex.html)** — a year selector
+  opens to the current year for a fast first paint; pick an earlier start year (back to 2006) or
+  *Full history* to extend it.
+
+> Rendered:
+> [▶ Backtest ledger](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_convex.html).
+
 ---
 
 ## Why this repo exists
