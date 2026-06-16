@@ -46,12 +46,17 @@ instance, is empty in 2008 (those funds didn't exist yet — their weight folds 
 appears as BTAL by 2019, and is the full DBMF/KMLM/BTAL set by 2026. Point-in-time TARGET weights,
 suggest-only.
 
-- **[Backtest position ledger — Convex Core](results/backtest_ledger_convex.html)** — a year selector
-  opens to the current year for a fast first paint; pick an earlier start year (back to 2006) or
-  *Full history* to extend it.
+Each ledger opens to the current year for a fast first paint; pick an earlier start year or
+*Full history* to extend it (Convex Core/Prime back to 2006, RACE to 2007).
 
-> Rendered:
-> [▶ Backtest ledger](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_convex.html).
+- **[Convex Core ledger](results/backtest_ledger_convex.html)** — equity / convexity / duration sleeves + the volatility brake.
+- **[Convex Prime ledger](results/backtest_ledger_prime.html)** — the leveraged sibling, same three sleeves.
+- **[RACE ledger](results/backtest_ledger_race.html)** — the seven-sleeve Regime-Adaptive Capital Engine (US-core / factor / intl / fixed-income / real-assets / crisis-alpha / cash).
+
+> Rendered (htmlpreview):
+> [▶ Convex Core](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_convex.html)
+> · [▶ Convex Prime](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_prime.html)
+> · [▶ RACE](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_race.html).
 
 ---
 
