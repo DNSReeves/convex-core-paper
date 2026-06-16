@@ -53,10 +53,10 @@ Each ledger opens to the current year for a fast first paint; pick an earlier st
 - **[Convex Prime ledger](results/backtest_ledger_prime.html)** — the leveraged sibling, same three sleeves.
 - **[RACE ledger](results/backtest_ledger_race.html)** — the seven-sleeve Regime-Adaptive Capital Engine (US-core / factor / intl / fixed-income / real-assets / crisis-alpha / cash).
 
-> Rendered (htmlpreview):
-> [▶ Convex Core](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_convex.html)
-> · [▶ Convex Prime](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_prime.html)
-> · [▶ RACE](https://htmlpreview.github.io/?https://github.com/DNSReeves/convex-core-paper/blob/main/results/backtest_ledger_race.html).
+> Rendered (GitHub Pages):
+> [▶ Convex Core](https://dnsreeves.github.io/convex-core-paper/results/backtest_ledger_convex.html)
+> · [▶ Convex Prime](https://dnsreeves.github.io/convex-core-paper/results/backtest_ledger_prime.html)
+> · [▶ RACE](https://dnsreeves.github.io/convex-core-paper/results/backtest_ledger_race.html).
 
 ---
 
