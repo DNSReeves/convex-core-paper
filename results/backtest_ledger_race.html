@@ -36,9 +36,9 @@
   <p class="sub">Point-in-time weekly TARGET weights from the deterministic backtest, to model inception. Suggest-only — not executed trades.</p>
   <div class="note">RACE weekly TARGET weights from the §15 walk-forward backtest (point-in-time, suggest-only — not executed trades). Seven sleeves + cash. Trend is each ETF's own price vs its 50/200-day MA + 20-day momentum. Cumulative = net-of-cost growth of $1 to that week (incl. the warmup); YTD = calendar-year-to-date. SPY cumulative/YTD = buy-and-hold SPY on the same grid (benchmark).</div>
   <div class="controls">
-    <label for="yr">Show weeks from year:</label>
+    <label for="yr">Show year:</label>
     <select id="yr"></select>
-    <button id="all">Full history</button>
+    <button id="all">Full history (newest→oldest)</button>
     <span id="count"></span>
   </div>
   <table><thead><tr id="hrow"></tr></thead><tbody id="body"></tbody></table>
@@ -73,23 +73,27 @@ function holds(arr){
   if(!arr || !arr.length) return '<span class="empty">&mdash;</span>';
   return arr.map(e => `<span class="etf"><span class="dot ${e.trend||'side'}"></span><b>${e.ticker}</b> <span class="wt">${(e.wt*100).toFixed(1)}%</span></span>`).join('');
 }
-function render(startYear){
-  const rows = ROWS.filter(r => parseInt(r.date.slice(0,4),10) >= startYear);
-  const lastYear = YEARS.length ? YEARS[YEARS.length-1] : startYear;
-  cnt.textContent = `${rows.length} weeks (${startYear}\u2192present; full history back to ${lastYear})`;
-  body.innerHTML = rows.map(r => {
-    const sl = r.sleeves||{};
-    const ahead = (r.cumulative!=null && r.spy_cumulative!=null) ? (r.cumulative>=r.spy_cumulative) : null;
-    const mcls = ahead===null?'':(ahead?'ahead':'behind');
-    let cells = `<td class="num">${r.date}</td><td class="reg">${r.regime||''}</td>`;
-    if(HAS_SCALE) cells += `<td class="num">${r.eq_scale!=null?r.eq_scale.toFixed(2):''}</td>`;
-    cells += `<td class="num lead ${mcls}">${money(r.cumulative)}</td><td class="num lead">${money(r.spy_cumulative)}</td><td class="num">${ytd(r.ytd)}</td><td class="num">${ytd(r.spy_ytd)}</td>`;
-    SORD.forEach(s => cells += `<td>${holds(sl[s])}</td>`);
-    return `<tr>${cells}</tr>`;
-  }).join('');
+function rowHtml(r){
+  const sl = r.sleeves||{};
+  const ahead = (r.cumulative!=null && r.spy_cumulative!=null) ? (r.cumulative>=r.spy_cumulative) : null;
+  const mcls = ahead===null?'':(ahead?'ahead':'behind');
+  let cells = `<td class="num">${r.date}</td><td class="reg">${r.regime||''}</td>`;
+  if(HAS_SCALE) cells += `<td class="num">${r.eq_scale!=null?r.eq_scale.toFixed(2):''}</td>`;
+  cells += `<td class="num lead ${mcls}">${money(r.cumulative)}</td><td class="num lead">${money(r.spy_cumulative)}</td><td class="num">${ytd(r.ytd)}</td><td class="num">${ytd(r.spy_ytd)}</td>`;
+  SORD.forEach(s => cells += `<td>${holds(sl[s])}</td>`);
+  return `<tr>${cells}</tr>`;
 }
-sel.addEventListener('change', ()=> render(parseInt(sel.value,10)));
-document.getElementById('all').addEventListener('click', ()=>{ sel.value = YEARS[YEARS.length-1]; render(parseInt(sel.value,10)); });
-render(parseInt(sel.value,10));
+function showYear(y){                                    // ONE calendar year — pick 2006 → see 2006
+  const rows = ROWS.filter(r => r.date.slice(0,4) === String(y));
+  cnt.textContent = `${rows.length} weeks in ${y} — pick another year, or "Full history" for the whole ${YEARS[YEARS.length-1]}\u2192present sweep`;
+  body.innerHTML = rows.map(rowHtml).join('');
+}
+function showAll(){
+  cnt.textContent = `${ROWS.length} weeks — full history (${YEARS[YEARS.length-1]}\u2192present, newest first)`;
+  body.innerHTML = ROWS.map(rowHtml).join('');
+}
+sel.addEventListener('change', ()=> showYear(sel.value));
+document.getElementById('all').addEventListener('click', showAll);
+showYear(sel.value);                                      // default = current/newest year only
 </script>
 </body></html>
