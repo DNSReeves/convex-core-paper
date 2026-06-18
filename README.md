@@ -30,6 +30,9 @@ intuitive understanding of the models *before* the formal paper:
 - **[A derivation from first principles](DERIVATION.md)** ([HTML](tutorial/convex_derivation.html)) —
   how the equation `w_equity + w_convexity + w_duration = 1` and the volatility brake follow from
   maximizing expected log-growth, with each step marked *rigorous* or *design choice* (companion to §4.1).
+- **[The DIY edition — a plain-English guide (PDF)](tutorial/Convex_Core_DIY_Guide.pdf)** — the everyday-investor,
+  no-math version: the one idea (avoid deep drawdowns), the three sleeves and illustrative funds, taxable-vs-IRA
+  placement, and an optional volatility brake you can run in a spreadsheet. *Education only — not investment advice.*
 
 > GitHub serves `.html` as source. To **read them rendered**, open the files in any browser, or
 > use the htmlpreview proxy —
