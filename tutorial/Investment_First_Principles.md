@@ -46,13 +46,31 @@ $$
 g = E[\log(1+R_p)]
 $$
 
-For ordinary diversified portfolio returns, the log can be approximated as:
+For ordinary diversified portfolio returns, the log can be approximated by a second-order Taylor expansion:
 
 $$
 \log(1+R_p) \approx R_p - \frac{1}{2}R_p^2
 $$
 
-That leads to the practical growth approximation:
+Take the expectation of both sides (recall $g = E[\log(1+R_p)]$):
+
+$$
+g \approx E\!\left[R_p - \frac{1}{2}R_p^2\right] = \mu_p - \frac{1}{2}E[R_p^2]
+$$
+
+The missing piece is the second moment. By the definition of variance, $\sigma_p^2 = E[R_p^2] - \mu_p^2$, so:
+
+$$
+E[R_p^2] = \sigma_p^2 + \mu_p^2
+$$
+
+Substituting:
+
+$$
+g \approx \mu_p - \frac{1}{2}\left(\sigma_p^2 + \mu_p^2\right)
+$$
+
+For ordinary portfolio returns $\mu_p$ is small — a few percent per period — so $\mu_p^2$ is roughly an order of magnitude smaller than $\sigma_p^2$ and is dropped. That leaves the practical growth approximation:
 
 $$
 \boxed{g \approx \mu_p - \frac{1}{2}\sigma_p^2}
