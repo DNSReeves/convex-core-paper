@@ -33,6 +33,11 @@ intuitive understanding of the models *before* the formal paper:
 - **[The DIY edition — a plain-English guide](tutorial/Convex_Core_DIY_Guide.md)** ([PDF](tutorial/Convex_Core_DIY_Guide.pdf)) — the everyday-investor,
   no-math version: the one idea (avoid deep drawdowns), the three sleeves and illustrative funds, taxable-vs-IRA
   placement, and an optional volatility brake you can run in a spreadsheet. *Education only — not investment advice.*
+- **[The Study That Predicted Its Own Conclusions — an essay](tutorial/The_Study_That_Predicted_Its_Own_Conclusions.md)** ([PDF](tutorial/The_Study_That_Predicted_Its_Own_Conclusions.pdf)) —
+  third in the essay series: two pre-registered studies put deployment timing and destination choice on
+  trial — *when* lost to deploy-on-receipt, *where* split into an answerable asset-class question, an
+  unrankable fund question, and a century-scale factor verdict. On writing the honest headline in advance.
+  *Education only — not investment advice.*
 - **[Investment First Principles — the framework, with allocations](tutorial/Investment_First_Principles.md)** ([PDF](tutorial/Investment_First_Principles.pdf)) —
   the bridge tier: derives the three-sleeve portfolio from the wealth-growth equation `g ≈ μ − ½σ²`, is explicit about
   what the equation *does and does not* settle (the convexity sleeve needs a left-tail/regime argument beyond mean-variance),
