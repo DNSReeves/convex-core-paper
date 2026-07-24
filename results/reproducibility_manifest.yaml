@@ -36,3 +36,12 @@ attribution_headline: BRAKE = 68% of Sortino / 75% of MaxDD improvement at -0.8p
                       (PIT-fold dilution) but 5.7pp saved in RATES_2022; REGIME ~0 (confirms
                       regime_wf); gross 1.032 mean / 1.10 max on the 0.95 profile (disclosed).
 attribution_writeup: results/ATTRIBUTION.md
+
+# --- Decision Robustness (2026-07-24, post-publication study) ----------------
+robustness_source: results/robustness.json  # 46-run breach frontier, 9 assumption axes
+robustness_spec: dnsr-agent/IMPL_DECISION_ROBUSTNESS.md v1.0 (promises + axes registered pre-run)
+robustness_headline: 3 breaches in 46 runs, all P2 (Sortino); the DRAWDOWN promise (P1) never
+                     broke under any tested assumption error. Fragilities are systemic: brake
+                     signal staleness >= ~21 trading days and per-trade costs in (25, 40] bps.
+                     Stress cap measurably a no-op (third confirmation of the ~0 regime layer).
+robustness_writeup: results/ROBUSTNESS.md
