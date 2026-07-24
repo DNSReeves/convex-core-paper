@@ -25,3 +25,14 @@ still_planned: [Deflated Sharpe Ratio, PBO/CSCV, walk-forward re-validation of r
 repository: https://github.com/DNSReeves/convex-core-paper
 license_code: PolyForm-Noncommercial-1.0.0
 license_paper: CC-BY-NC-4.0
+
+# --- Convexity Attribution (2026-07-24, post-publication study) -------------
+attribution_source: results/attribution.json  # exact Shapley over the 2^5 mechanism factorial
+attribution_spec: dnsr-agent/IMPL_CONVEX_ATTRIB.md v1.1 (registered toggles + pre-run amendments)
+attribution_window: 2005-01-01 .. 2026-06-30  # engine span; full-model metrics agree with the
+                                              # paper table within the window difference
+attribution_headline: BRAKE = 68% of Sortino / 75% of MaxDD improvement at -0.8pp CAGR;
+                      all-off matches full-model CAGR at 3x drawdown; SLEEVE 4% aggregate
+                      (PIT-fold dilution) but 5.7pp saved in RATES_2022; REGIME ~0 (confirms
+                      regime_wf); gross 1.032 mean / 1.10 max on the 0.95 profile (disclosed).
+attribution_writeup: results/ATTRIBUTION.md

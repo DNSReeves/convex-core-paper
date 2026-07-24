@@ -1,0 +1,1763 @@
+{
+ "spec": "dnsr-agent/IMPL_CONVEX_ATTRIB.md v1.1",
+ "window": [
+  "2005-01-01",
+  "2026-06-30"
+ ],
+ "engine": "tradeclassifier.convex_core (unmodified; harness patches recorded)",
+ "slippage_bps": 5.0,
+ "mechanisms": [
+  "BRAKE",
+  "SLEEVE",
+  "DUR",
+  "REGIME",
+  "TILT"
+ ],
+ "profiles": {
+  "paper_0.95": {
+   "profile_params": {
+    "w_equity": 0.95,
+    "w_convexity": 0.15,
+    "vol_target": 0.12,
+    "stress_eq_scale_cap": 0.7,
+    "tilt_frac": 0.4
+   },
+   "runs": {
+    "none": {
+     "metrics": {
+      "cagr": 0.107149,
+      "ann_vol": 0.183398,
+      "sharpe": 0.646888,
+      "sortino": 0.790162,
+      "max_drawdown": -0.53098,
+      "calmar": 0.202
+     },
+     "annual_turnover": 0.049,
+     "gross": {
+      "mean": 0.9941,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3516316265515421,
+      "COVID_2020_03": -0.16151438847935762,
+      "RATES_2022": -0.16808966356303423
+     }
+    },
+    "BRAKE": {
+     "metrics": {
+      "cagr": 0.098299,
+      "ann_vol": 0.120932,
+      "sharpe": 0.836077,
+      "sortino": 1.095529,
+      "max_drawdown": -0.27176,
+      "calmar": 0.362
+     },
+     "annual_turnover": 2.904,
+     "gross": {
+      "mean": 0.9808,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.12653165341581885,
+      "COVID_2020_03": -0.11294301308690069,
+      "RATES_2022": -0.11942392871085927
+     }
+    },
+    "SLEEVE": {
+     "metrics": {
+      "cagr": 0.108643,
+      "ann_vol": 0.180887,
+      "sharpe": 0.660781,
+      "sortino": 0.804573,
+      "max_drawdown": -0.53098,
+      "calmar": 0.205
+     },
+     "annual_turnover": 0.742,
+     "gross": {
+      "mean": 1.0554,
+      "max": 1.1,
+      "pct_days_gt_1.02": 61.3
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3516316265515421,
+      "COVID_2020_03": -0.14514801294094126,
+      "RATES_2022": -0.12930611077858523
+     }
+    },
+    "DUR": {
+     "metrics": {
+      "cagr": 0.108059,
+      "ann_vol": 0.182826,
+      "sharpe": 0.652829,
+      "sortino": 0.797937,
+      "max_drawdown": -0.528119,
+      "calmar": 0.205
+     },
+     "annual_turnover": 0.049,
+     "gross": {
+      "mean": 0.9976,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.34948566088186117,
+      "COVID_2020_03": -0.15932029491187683,
+      "RATES_2022": -0.17283090127304568
+     }
+    },
+    "REGIME": {
+     "metrics": {
+      "cagr": 0.104298,
+      "ann_vol": 0.17163,
+      "sharpe": 0.664148,
+      "sortino": 0.818848,
+      "max_drawdown": -0.527339,
+      "calmar": 0.198
+     },
+     "annual_turnover": 0.749,
+     "gross": {
+      "mean": 0.9902,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.345068590196401,
+      "COVID_2020_03": -0.16397596319917274,
+      "RATES_2022": -0.16808966356303423
+     }
+    },
+    "TILT": {
+     "metrics": {
+      "cagr": 0.110208,
+      "ann_vol": 0.166889,
+      "sharpe": 0.710199,
+      "sortino": 0.872161,
+      "max_drawdown": -0.471302,
+      "calmar": 0.234
+     },
+     "annual_turnover": 1.565,
+     "gross": {
+      "mean": 0.9941,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3172371075019874,
+      "COVID_2020_03": -0.11277068419888814,
+      "RATES_2022": -0.037196209583534645
+     }
+    },
+    "BRAKE+SLEEVE": {
+     "metrics": {
+      "cagr": 0.098266,
+      "ann_vol": 0.117772,
+      "sharpe": 0.85504,
+      "sortino": 1.118468,
+      "max_drawdown": -0.27176,
+      "calmar": 0.362
+     },
+     "annual_turnover": 3.34,
+     "gross": {
+      "mean": 1.0201,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.12653165341581885,
+      "COVID_2020_03": -0.0947417266068954,
+      "RATES_2022": -0.07770084737329552
+     }
+    },
+    "BRAKE+DUR": {
+     "metrics": {
+      "cagr": 0.104059,
+      "ann_vol": 0.118759,
+      "sharpe": 0.893238,
+      "sortino": 1.174672,
+      "max_drawdown": -0.232588,
+      "calmar": 0.447
+     },
+     "annual_turnover": 3.066,
+     "gross": {
+      "mean": 0.9923,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08462502498603075,
+      "COVID_2020_03": -0.09357770843702329,
+      "RATES_2022": -0.14981548234508113
+     }
+    },
+    "BRAKE+REGIME": {
+     "metrics": {
+      "cagr": 0.097627,
+      "ann_vol": 0.120632,
+      "sharpe": 0.832784,
+      "sortino": 1.089584,
+      "max_drawdown": -0.27176,
+      "calmar": 0.359
+     },
+     "annual_turnover": 2.988,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.12653165341581885,
+      "COVID_2020_03": -0.11294301308690069,
+      "RATES_2022": -0.11942392871085927
+     }
+    },
+    "BRAKE+TILT": {
+     "metrics": {
+      "cagr": 0.097862,
+      "ann_vol": 0.116573,
+      "sharpe": 0.859505,
+      "sortino": 1.112259,
+      "max_drawdown": -0.22723,
+      "calmar": 0.431
+     },
+     "annual_turnover": 4.397,
+     "gross": {
+      "mean": 0.9808,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.11121285832951178,
+      "COVID_2020_03": -0.08694166988425256,
+      "RATES_2022": -0.007972977544216997
+     }
+    },
+    "DUR+SLEEVE": {
+     "metrics": {
+      "cagr": 0.109676,
+      "ann_vol": 0.180462,
+      "sharpe": 0.667071,
+      "sortino": 0.812633,
+      "max_drawdown": -0.528119,
+      "calmar": 0.208
+     },
+     "annual_turnover": 0.742,
+     "gross": {
+      "mean": 1.0589,
+      "max": 1.1,
+      "pct_days_gt_1.02": 61.3
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.34948566088186117,
+      "COVID_2020_03": -0.14514801294094126,
+      "RATES_2022": -0.12930611077858523
+     }
+    },
+    "REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.105793,
+      "ann_vol": 0.169007,
+      "sharpe": 0.679801,
+      "sortino": 0.835999,
+      "max_drawdown": -0.527339,
+      "calmar": 0.201
+     },
+     "annual_turnover": 1.403,
+     "gross": {
+      "mean": 1.0503,
+      "max": 1.1,
+      "pct_days_gt_1.02": 60.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.345068590196401,
+      "COVID_2020_03": -0.14774735387977567,
+      "RATES_2022": -0.12930611077858523
+     }
+    },
+    "SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.111442,
+      "ann_vol": 0.165562,
+      "sharpe": 0.721257,
+      "sortino": 0.8843,
+      "max_drawdown": -0.471302,
+      "calmar": 0.236
+     },
+     "annual_turnover": 2.258,
+     "gross": {
+      "mean": 1.0554,
+      "max": 1.1,
+      "pct_days_gt_1.02": 61.3
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3172371075019874,
+      "COVID_2020_03": -0.09565785304258523,
+      "RATES_2022": 0.0065980947265669165
+     }
+    },
+    "DUR+REGIME": {
+     "metrics": {
+      "cagr": 0.10742,
+      "ann_vol": 0.169444,
+      "sharpe": 0.68717,
+      "sortino": 0.849866,
+      "max_drawdown": -0.517253,
+      "calmar": 0.208
+     },
+     "annual_turnover": 1.128,
+     "gross": {
+      "mean": 0.997,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3323931719128741,
+      "COVID_2020_03": -0.16211145719592168,
+      "RATES_2022": -0.17258367694424892
+     }
+    },
+    "DUR+TILT": {
+     "metrics": {
+      "cagr": 0.111095,
+      "ann_vol": 0.166397,
+      "sharpe": 0.7166,
+      "sortino": 0.880828,
+      "max_drawdown": -0.469652,
+      "calmar": 0.237
+     },
+     "annual_turnover": 1.565,
+     "gross": {
+      "mean": 0.9976,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3150347002067133,
+      "COVID_2020_03": -0.11049373680349117,
+      "RATES_2022": -0.042668919831462815
+     }
+    },
+    "REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.108767,
+      "ann_vol": 0.157541,
+      "sharpe": 0.73451,
+      "sortino": 0.91511,
+      "max_drawdown": -0.455566,
+      "calmar": 0.239
+     },
+     "annual_turnover": 2.534,
+     "gross": {
+      "mean": 0.9902,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.29763562059988824,
+      "COVID_2020_03": -0.13324471401836036,
+      "RATES_2022": -0.060489404910472055
+     }
+    },
+    "BRAKE+DUR+SLEEVE": {
+     "metrics": {
+      "cagr": 0.104083,
+      "ann_vol": 0.11562,
+      "sharpe": 0.914477,
+      "sortino": 1.199503,
+      "max_drawdown": -0.232588,
+      "calmar": 0.447
+     },
+     "annual_turnover": 3.501,
+     "gross": {
+      "mean": 1.0316,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08462502498603075,
+      "COVID_2020_03": -0.08053847285775317,
+      "RATES_2022": -0.0946122352917701
+     }
+    },
+    "BRAKE+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.097685,
+      "ann_vol": 0.117459,
+      "sharpe": 0.852501,
+      "sortino": 1.113524,
+      "max_drawdown": -0.27176,
+      "calmar": 0.359
+     },
+     "annual_turnover": 3.424,
+     "gross": {
+      "mean": 1.0192,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.12653165341581885,
+      "COVID_2020_03": -0.0947417266068954,
+      "RATES_2022": -0.07770084737329552
+     }
+    },
+    "BRAKE+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.098397,
+      "ann_vol": 0.1152,
+      "sharpe": 0.872586,
+      "sortino": 1.125913,
+      "max_drawdown": -0.22723,
+      "calmar": 0.433
+     },
+     "annual_turnover": 4.816,
+     "gross": {
+      "mean": 1.0201,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.11121285832951178,
+      "COVID_2020_03": -0.0699689236658726,
+      "RATES_2022": 0.03637415644956099
+     }
+    },
+    "BRAKE+DUR+REGIME": {
+     "metrics": {
+      "cagr": 0.104844,
+      "ann_vol": 0.118544,
+      "sharpe": 0.900647,
+      "sortino": 1.17785,
+      "max_drawdown": -0.217966,
+      "calmar": 0.481
+     },
+     "annual_turnover": 4.431,
+     "gross": {
+      "mean": 0.993,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.06873423571630999,
+      "COVID_2020_03": -0.09612692257442346,
+      "RATES_2022": -0.15080910046192408
+     }
+    },
+    "BRAKE+DUR+TILT": {
+     "metrics": {
+      "cagr": 0.103875,
+      "ann_vol": 0.114987,
+      "sharpe": 0.91727,
+      "sortino": 1.190526,
+      "max_drawdown": -0.192184,
+      "calmar": 0.54
+     },
+     "annual_turnover": 4.523,
+     "gross": {
+      "mean": 0.9923,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.06853668259433743,
+      "COVID_2020_03": -0.06717698204487277,
+      "RATES_2022": -0.04221744324783361
+     }
+    },
+    "BRAKE+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.098205,
+      "ann_vol": 0.116984,
+      "sharpe": 0.859576,
+      "sortino": 1.110755,
+      "max_drawdown": -0.219774,
+      "calmar": 0.447
+     },
+     "annual_turnover": 4.681,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.10716820526249315,
+      "COVID_2020_03": -0.09671042523206108,
+      "RATES_2022": -0.031112678987884612
+     }
+    },
+    "DUR+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.109121,
+      "ann_vol": 0.167223,
+      "sharpe": 0.703232,
+      "sortino": 0.867565,
+      "max_drawdown": -0.517253,
+      "calmar": 0.211
+     },
+     "annual_turnover": 1.651,
+     "gross": {
+      "mean": 1.057,
+      "max": 1.1,
+      "pct_days_gt_1.02": 60.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3323931719128741,
+      "COVID_2020_03": -0.1485395634876736,
+      "RATES_2022": -0.12930611077858523
+     }
+    },
+    "DUR+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.112461,
+      "ann_vol": 0.165184,
+      "sharpe": 0.728079,
+      "sortino": 0.89316,
+      "max_drawdown": -0.469652,
+      "calmar": 0.239
+     },
+     "annual_turnover": 2.258,
+     "gross": {
+      "mean": 1.0589,
+      "max": 1.1,
+      "pct_days_gt_1.02": 61.3
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.3150347002067133,
+      "COVID_2020_03": -0.09565785304258523,
+      "RATES_2022": 0.0065980947265669165
+     }
+    },
+    "REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.110025,
+      "ann_vol": 0.156079,
+      "sharpe": 0.747176,
+      "sortino": 0.928464,
+      "max_drawdown": -0.455566,
+      "calmar": 0.242
+     },
+     "annual_turnover": 3.188,
+     "gross": {
+      "mean": 1.0503,
+      "max": 1.1,
+      "pct_days_gt_1.02": 60.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.29763562059988824,
+      "COVID_2020_03": -0.1165990400082012,
+      "RATES_2022": -0.017739766874120155
+     }
+    },
+    "DUR+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.11178,
+      "ann_vol": 0.15583,
+      "sharpe": 0.75827,
+      "sortino": 0.945052,
+      "max_drawdown": -0.445058,
+      "calmar": 0.251
+     },
+     "annual_turnover": 2.914,
+     "gross": {
+      "mean": 0.997,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.28429025165735167,
+      "COVID_2020_03": -0.13204742453661344,
+      "RATES_2022": -0.0655605035686776
+     }
+    },
+    "BRAKE+DUR+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.105231,
+      "ann_vol": 0.115139,
+      "sharpe": 0.926852,
+      "sortino": 1.211732,
+      "max_drawdown": -0.217966,
+      "calmar": 0.483
+     },
+     "annual_turnover": 4.616,
+     "gross": {
+      "mean": 1.0323,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.06873423571630999,
+      "COVID_2020_03": -0.08187662811940744,
+      "RATES_2022": -0.09529795453671852
+     }
+    },
+    "BRAKE+DUR+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.104413,
+      "ann_vol": 0.113587,
+      "sharpe": 0.931462,
+      "sortino": 1.20277,
+      "max_drawdown": -0.192184,
+      "calmar": 0.543
+     },
+     "annual_turnover": 4.941,
+     "gross": {
+      "mean": 1.0316,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.06853668259433743,
+      "COVID_2020_03": -0.05551110722936037,
+      "RATES_2022": 0.01740384192679789
+     }
+    },
+    "BRAKE+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.098538,
+      "ann_vol": 0.115575,
+      "sharpe": 0.871258,
+      "sortino": 1.122603,
+      "max_drawdown": -0.219774,
+      "calmar": 0.448
+     },
+     "annual_turnover": 5.142,
+     "gross": {
+      "mean": 1.0192,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.10716820526249315,
+      "COVID_2020_03": -0.07991145341065464,
+      "RATES_2022": 0.010875877251542487
+     }
+    },
+    "BRAKE+DUR+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.104842,
+      "ann_vol": 0.11639,
+      "sharpe": 0.915147,
+      "sortino": 1.180828,
+      "max_drawdown": -0.184624,
+      "calmar": 0.568
+     },
+     "annual_turnover": 6.09,
+     "gross": {
+      "mean": 0.993,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.04972933964072479,
+      "COVID_2020_03": -0.08019595814598723,
+      "RATES_2022": -0.06556890367734669
+     }
+    },
+    "DUR+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.113276,
+      "ann_vol": 0.154648,
+      "sharpe": 0.771561,
+      "sortino": 0.960146,
+      "max_drawdown": -0.445058,
+      "calmar": 0.255
+     },
+     "annual_turnover": 3.437,
+     "gross": {
+      "mean": 1.057,
+      "max": 1.1,
+      "pct_days_gt_1.02": 60.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.28429025165735167,
+      "COVID_2020_03": -0.1178299406619494,
+      "RATES_2022": -0.017739766874120155
+     }
+    },
+    "BRAKE+DUR+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.105882,
+      "ann_vol": 0.114615,
+      "sharpe": 0.935735,
+      "sortino": 1.203753,
+      "max_drawdown": -0.180045,
+      "calmar": 0.588
+     },
+     "annual_turnover": 6.269,
+     "gross": {
+      "mean": 1.0323,
+      "max": 1.1,
+      "pct_days_gt_1.02": 40.8
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.04972933964072479,
+      "COVID_2020_03": -0.06733259284594562,
+      "RATES_2022": -0.009322846691263598
+     }
+    }
+   },
+   "shapley": {
+    "cagr": {
+     "BRAKE": -0.008007,
+     "SLEEVE": 0.001025,
+     "DUR": 0.004244,
+     "REGIME": -0.000428,
+     "TILT": 0.001899
+    },
+    "ann_vol": {
+     "BRAKE": -0.051426,
+     "SLEEVE": -0.00212,
+     "DUR": -0.001191,
+     "REGIME": -0.005469,
+     "TILT": -0.008576
+    },
+    "sharpe": {
+     "BRAKE": 0.180723,
+     "SLEEVE": 0.016302,
+     "DUR": 0.037356,
+     "REGIME": 0.014269,
+     "TILT": 0.040198
+    },
+    "sortino": {
+     "BRAKE": 0.28203,
+     "SLEEVE": 0.017994,
+     "DUR": 0.048568,
+     "REGIME": 0.020597,
+     "TILT": 0.044401
+    },
+    "max_drawdown": {
+     "BRAKE": 0.264807,
+     "SLEEVE": 0.000916,
+     "DUR": 0.02294,
+     "REGIME": 0.009822,
+     "TILT": 0.05245
+    },
+    "calmar": {
+     "BRAKE": 0.237333,
+     "SLEEVE": 0.005833,
+     "DUR": 0.063417,
+     "REGIME": 0.015333,
+     "TILT": 0.064083
+    }
+   },
+   "additivity_residuals": {
+    "cagr": 0.0,
+    "ann_vol": 0.0,
+    "sharpe": 0.0,
+    "sortino": -0.0,
+    "max_drawdown": 0.0,
+    "calmar": 0.0
+   },
+   "leave_one_out": {
+    "BRAKE": {
+     "cagr": -0.007394,
+     "ann_vol": -0.040033,
+     "sharpe": 0.164174,
+     "sortino": 0.243607,
+     "max_drawdown": 0.265013,
+     "calmar": 0.333
+    },
+    "SLEEVE": {
+     "cagr": 0.00104,
+     "ann_vol": -0.001775,
+     "sharpe": 0.020588,
+     "sortino": 0.022925,
+     "max_drawdown": 0.004579,
+     "calmar": 0.02
+    },
+    "DUR": {
+     "cagr": 0.007344,
+     "ann_vol": -0.00096,
+     "sharpe": 0.064477,
+     "sortino": 0.08115,
+     "max_drawdown": 0.039729,
+     "calmar": 0.14
+    },
+    "REGIME": {
+     "cagr": 0.001469,
+     "ann_vol": 0.001028,
+     "sharpe": 0.004273,
+     "sortino": 0.000983,
+     "max_drawdown": 0.012139,
+     "calmar": 0.045
+    },
+    "TILT": {
+     "cagr": 0.000651,
+     "ann_vol": -0.000524,
+     "sharpe": 0.008883,
+     "sortino": -0.007979,
+     "max_drawdown": 0.037921,
+     "calmar": 0.105
+    }
+   },
+   "pairwise_interactions": {
+    "BRAKE+SLEEVE": {
+     "sortino": 0.008528,
+     "max_drawdown": 0.0
+    },
+    "BRAKE+DUR": {
+     "sortino": 0.071368,
+     "max_drawdown": 0.036311
+    },
+    "BRAKE+REGIME": {
+     "sortino": -0.034631,
+     "max_drawdown": -0.003641
+    },
+    "BRAKE+TILT": {
+     "sortino": -0.065269,
+     "max_drawdown": -0.015148
+    },
+    "SLEEVE+DUR": {
+     "sortino": 0.000285,
+     "max_drawdown": 0.0
+    },
+    "SLEEVE+REGIME": {
+     "sortino": 0.00274,
+     "max_drawdown": 0.0
+    },
+    "SLEEVE+TILT": {
+     "sortino": -0.002272,
+     "max_drawdown": 0.0
+    },
+    "DUR+REGIME": {
+     "sortino": 0.023243,
+     "max_drawdown": 0.007225
+    },
+    "DUR+TILT": {
+     "sortino": 0.000892,
+     "max_drawdown": -0.001211
+    },
+    "REGIME+TILT": {
+     "sortino": 0.014263,
+     "max_drawdown": 0.012095
+    }
+   }
+  },
+  "default_0.65": {
+   "profile_params": {
+    "w_equity": 0.65,
+    "w_convexity": 0.15,
+    "vol_target": 0.12,
+    "stress_eq_scale_cap": 0.7,
+    "tilt_frac": 0.4
+   },
+   "runs": {
+    "none": {
+     "metrics": {
+      "cagr": 0.079833,
+      "ann_vol": 0.12533,
+      "sharpe": 0.675602,
+      "sortino": 0.82553,
+      "max_drawdown": -0.390104,
+      "calmar": 0.205
+     },
+     "annual_turnover": 0.049,
+     "gross": {
+      "mean": 0.9587,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.24104540109805794,
+      "COVID_2020_03": -0.10567798290945196,
+      "RATES_2022": -0.11202343684399285
+     }
+    },
+    "BRAKE": {
+     "metrics": {
+      "cagr": 0.071535,
+      "ann_vol": 0.08126,
+      "sharpe": 0.891056,
+      "sortino": 1.168949,
+      "max_drawdown": -0.18616,
+      "calmar": 0.384
+     },
+     "annual_turnover": 1.502,
+     "gross": {
+      "mean": 0.9497,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08129735613271616,
+      "COVID_2020_03": -0.07614357351043954,
+      "RATES_2022": -0.07602684352207001
+     }
+    },
+    "SLEEVE": {
+     "metrics": {
+      "cagr": 0.079783,
+      "ann_vol": 0.123054,
+      "sharpe": 0.685421,
+      "sortino": 0.834687,
+      "max_drawdown": -0.390104,
+      "calmar": 0.205
+     },
+     "annual_turnover": 1.081,
+     "gross": {
+      "mean": 0.9587,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.24104540109805794,
+      "COVID_2020_03": -0.08874860572197707,
+      "RATES_2022": -0.07193166833623144
+     }
+    },
+    "DUR": {
+     "metrics": {
+      "cagr": 0.085704,
+      "ann_vol": 0.122023,
+      "sharpe": 0.734989,
+      "sortino": 0.908545,
+      "max_drawdown": -0.364711,
+      "calmar": 0.235
+     },
+     "annual_turnover": 0.049,
+     "gross": {
+      "mean": 0.9835,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.22411372098222715,
+      "COVID_2020_03": -0.08980303476423357,
+      "RATES_2022": -0.14683363204800803
+     }
+    },
+    "REGIME": {
+     "metrics": {
+      "cagr": 0.077471,
+      "ann_vol": 0.116858,
+      "sharpe": 0.697113,
+      "sortino": 0.859951,
+      "max_drawdown": -0.384319,
+      "calmar": 0.202
+     },
+     "annual_turnover": 0.528,
+     "gross": {
+      "mean": 0.9561,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.23242797023040052,
+      "COVID_2020_03": -0.10848073600481511,
+      "RATES_2022": -0.11202343684399285
+     }
+    },
+    "TILT": {
+     "metrics": {
+      "cagr": 0.081199,
+      "ann_vol": 0.114055,
+      "sharpe": 0.741705,
+      "sortino": 0.911173,
+      "max_drawdown": -0.343413,
+      "calmar": 0.236
+     },
+     "annual_turnover": 1.086,
+     "gross": {
+      "mean": 0.9587,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.2181978339962507,
+      "COVID_2020_03": -0.07182764846874201,
+      "RATES_2022": -0.01983965822222422
+     }
+    },
+    "BRAKE+SLEEVE": {
+     "metrics": {
+      "cagr": 0.072226,
+      "ann_vol": 0.079838,
+      "sharpe": 0.913573,
+      "sortino": 1.199518,
+      "max_drawdown": -0.18616,
+      "calmar": 0.388
+     },
+     "annual_turnover": 2.657,
+     "gross": {
+      "mean": 0.9497,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08129735613271616,
+      "COVID_2020_03": -0.05906299685391614,
+      "RATES_2022": -0.044628725493686794
+     }
+    },
+    "BRAKE+DUR": {
+     "metrics": {
+      "cagr": 0.080341,
+      "ann_vol": 0.078522,
+      "sharpe": 1.023593,
+      "sortino": 1.370741,
+      "max_drawdown": -0.158126,
+      "calmar": 0.508
+     },
+     "annual_turnover": 1.573,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.03363442842763098,
+      "COVID_2020_03": -0.04822625284054094,
+      "RATES_2022": -0.12996892804850713
+     }
+    },
+    "BRAKE+REGIME": {
+     "metrics": {
+      "cagr": 0.070902,
+      "ann_vol": 0.081113,
+      "sharpe": 0.885245,
+      "sortino": 1.158747,
+      "max_drawdown": -0.18616,
+      "calmar": 0.381
+     },
+     "annual_turnover": 1.563,
+     "gross": {
+      "mean": 0.949,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08129735613271616,
+      "COVID_2020_03": -0.07614357351043954,
+      "RATES_2022": -0.07602684352207001
+     }
+    },
+    "BRAKE+TILT": {
+     "metrics": {
+      "cagr": 0.070822,
+      "ann_vol": 0.079378,
+      "sharpe": 0.901908,
+      "sortino": 1.168236,
+      "max_drawdown": -0.157828,
+      "calmar": 0.449
+     },
+     "annual_turnover": 2.742,
+     "gross": {
+      "mean": 0.9497,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.07413364494019292,
+      "COVID_2020_03": -0.059045828514134646,
+      "RATES_2022": -0.0038092610737801014
+     }
+    },
+    "DUR+SLEEVE": {
+     "metrics": {
+      "cagr": 0.086079,
+      "ann_vol": 0.119863,
+      "sharpe": 0.748931,
+      "sortino": 0.920104,
+      "max_drawdown": -0.364711,
+      "calmar": 0.236
+     },
+     "annual_turnover": 1.081,
+     "gross": {
+      "mean": 0.9835,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.22411372098222715,
+      "COVID_2020_03": -0.07953517471865146,
+      "RATES_2022": -0.09273889055426754
+     }
+    },
+    "REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.077507,
+      "ann_vol": 0.114565,
+      "sharpe": 0.709035,
+      "sortino": 0.872496,
+      "max_drawdown": -0.384319,
+      "calmar": 0.202
+     },
+     "annual_turnover": 1.56,
+     "gross": {
+      "mean": 0.9561,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.23242797023040052,
+      "COVID_2020_03": -0.0936697109878839,
+      "RATES_2022": -0.07193166833623144
+     }
+    },
+    "SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.080974,
+      "ann_vol": 0.112992,
+      "sharpe": 0.745768,
+      "sortino": 0.914827,
+      "max_drawdown": -0.343413,
+      "calmar": 0.236
+     },
+     "annual_turnover": 2.118,
+     "gross": {
+      "mean": 0.9587,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.2181978339962507,
+      "COVID_2020_03": -0.0544021119846233,
+      "RATES_2022": 0.023656616527707452
+     }
+    },
+    "DUR+REGIME": {
+     "metrics": {
+      "cagr": 0.085627,
+      "ann_vol": 0.11138,
+      "sharpe": 0.793495,
+      "sortino": 0.994641,
+      "max_drawdown": -0.348081,
+      "calmar": 0.246
+     },
+     "annual_turnover": 2.242,
+     "gross": {
+      "mean": 0.9827,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.1993067218063852,
+      "COVID_2020_03": -0.09306946279577777,
+      "RATES_2022": -0.14507866232982192
+     }
+    },
+    "DUR+TILT": {
+     "metrics": {
+      "cagr": 0.086958,
+      "ann_vol": 0.111397,
+      "sharpe": 0.804398,
+      "sortino": 1.001571,
+      "max_drawdown": -0.32961,
+      "calmar": 0.264
+     },
+     "annual_turnover": 1.086,
+     "gross": {
+      "mean": 0.9835,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.2010756383645126,
+      "COVID_2020_03": -0.0555691307722147,
+      "RATES_2022": -0.05819564063353522
+     }
+    },
+    "REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.079779,
+      "ann_vol": 0.107524,
+      "sharpe": 0.767824,
+      "sortino": 0.956715,
+      "max_drawdown": -0.331641,
+      "calmar": 0.241
+     },
+     "annual_turnover": 1.75,
+     "gross": {
+      "mean": 0.9561,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.20478378512003126,
+      "COVID_2020_03": -0.08733870729221394,
+      "RATES_2022": -0.036221185322005134
+     }
+    },
+    "BRAKE+DUR+SLEEVE": {
+     "metrics": {
+      "cagr": 0.081315,
+      "ann_vol": 0.076718,
+      "sharpe": 1.057592,
+      "sortino": 1.413826,
+      "max_drawdown": -0.129995,
+      "calmar": 0.626
+     },
+     "annual_turnover": 2.728,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.03363442842763098,
+      "COVID_2020_03": -0.0374552074425577,
+      "RATES_2022": -0.08641112292072428
+     }
+    },
+    "BRAKE+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.071517,
+      "ann_vol": 0.079577,
+      "sharpe": 0.907993,
+      "sortino": 1.189861,
+      "max_drawdown": -0.18616,
+      "calmar": 0.384
+     },
+     "annual_turnover": 2.737,
+     "gross": {
+      "mean": 0.949,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.08129735613271616,
+      "COVID_2020_03": -0.05906299685391614,
+      "RATES_2022": -0.044628725493686794
+     }
+    },
+    "BRAKE+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.071922,
+      "ann_vol": 0.078771,
+      "sharpe": 0.921291,
+      "sortino": 1.190803,
+      "max_drawdown": -0.157828,
+      "calmar": 0.456
+     },
+     "annual_turnover": 3.789,
+     "gross": {
+      "mean": 0.9497,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.07413364494019292,
+      "COVID_2020_03": -0.0417179606116822,
+      "RATES_2022": 0.04043290640578112
+     }
+    },
+    "BRAKE+DUR+REGIME": {
+     "metrics": {
+      "cagr": 0.078811,
+      "ann_vol": 0.08197,
+      "sharpe": 0.966621,
+      "sortino": 1.271655,
+      "max_drawdown": -0.157658,
+      "calmar": 0.5
+     },
+     "annual_turnover": 4.231,
+     "gross": {
+      "mean": 0.98,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.02056671605747329,
+      "COVID_2020_03": -0.0524583737440979,
+      "RATES_2022": -0.12887060515381454
+     }
+    },
+    "BRAKE+DUR+TILT": {
+     "metrics": {
+      "cagr": 0.079765,
+      "ann_vol": 0.077763,
+      "sharpe": 1.025983,
+      "sortino": 1.352645,
+      "max_drawdown": -0.120869,
+      "calmar": 0.66
+     },
+     "annual_turnover": 2.793,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.026484997027381607,
+      "COVID_2020_03": -0.031042763445565225,
+      "RATES_2022": -0.06324696868916546
+     }
+    },
+    "BRAKE+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.071528,
+      "ann_vol": 0.079721,
+      "sharpe": 0.906656,
+      "sortino": 1.171096,
+      "max_drawdown": -0.152292,
+      "calmar": 0.47
+     },
+     "annual_turnover": 3.013,
+     "gross": {
+      "mean": 0.949,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.07128454376204663,
+      "COVID_2020_03": -0.06595323120566843,
+      "RATES_2022": -0.01581286809760929
+     }
+    },
+    "DUR+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.08618,
+      "ann_vol": 0.109145,
+      "sharpe": 0.812144,
+      "sortino": 1.015727,
+      "max_drawdown": -0.348081,
+      "calmar": 0.248
+     },
+     "annual_turnover": 2.848,
+     "gross": {
+      "mean": 0.9827,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.1993067218063852,
+      "COVID_2020_03": -0.08568553124876155,
+      "RATES_2022": -0.09169513742411328
+     }
+    },
+    "DUR+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.087176,
+      "ann_vol": 0.110344,
+      "sharpe": 0.812835,
+      "sortino": 1.00824,
+      "max_drawdown": -0.32961,
+      "calmar": 0.264
+     },
+     "annual_turnover": 2.118,
+     "gross": {
+      "mean": 0.9835,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.2010756383645126,
+      "COVID_2020_03": -0.044967164839633034,
+      "RATES_2022": 0.0007472761107767401
+     }
+    },
+    "REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.079607,
+      "ann_vol": 0.106384,
+      "sharpe": 0.773401,
+      "sortino": 0.961633,
+      "max_drawdown": -0.331641,
+      "calmar": 0.24
+     },
+     "annual_turnover": 2.781,
+     "gross": {
+      "mean": 0.9561,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.20478378512003126,
+      "COVID_2020_03": -0.07223150293416292,
+      "RATES_2022": 0.006558167030944029
+     }
+    },
+    "DUR+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.087515,
+      "ann_vol": 0.103487,
+      "sharpe": 0.862652,
+      "sortino": 1.087532,
+      "max_drawdown": -0.302721,
+      "calmar": 0.289
+     },
+     "annual_turnover": 3.464,
+     "gross": {
+      "mean": 0.9827,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.17199732549446567,
+      "COVID_2020_03": -0.07245202171066356,
+      "RATES_2022": -0.07207866556601927
+     }
+    },
+    "BRAKE+DUR+REGIME+SLEEVE": {
+     "metrics": {
+      "cagr": 0.080199,
+      "ann_vol": 0.079018,
+      "sharpe": 1.016005,
+      "sortino": 1.340713,
+      "max_drawdown": -0.135694,
+      "calmar": 0.591
+     },
+     "annual_turnover": 4.923,
+     "gross": {
+      "mean": 0.98,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.02056671605747329,
+      "COVID_2020_03": -0.04027046607708151,
+      "RATES_2022": -0.08551098113841282
+     }
+    },
+    "BRAKE+DUR+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.081305,
+      "ann_vol": 0.076661,
+      "sharpe": 1.058211,
+      "sortino": 1.384557,
+      "max_drawdown": -0.120869,
+      "calmar": 0.673
+     },
+     "annual_turnover": 3.841,
+     "gross": {
+      "mean": 0.9799,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.026484997027381607,
+      "COVID_2020_03": -0.02011867329004302,
+      "RATES_2022": -0.0036895868461698234
+     }
+    },
+    "BRAKE+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.071853,
+      "ann_vol": 0.078995,
+      "sharpe": 0.918082,
+      "sortino": 1.183403,
+      "max_drawdown": -0.152292,
+      "calmar": 0.472
+     },
+     "annual_turnover": 4.056,
+     "gross": {
+      "mean": 0.949,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.07128454376204663,
+      "COVID_2020_03": -0.04874721125532522,
+      "RATES_2022": 0.028660025698800107
+     }
+    },
+    "BRAKE+DUR+REGIME+TILT": {
+     "metrics": {
+      "cagr": 0.081349,
+      "ann_vol": 0.081703,
+      "sharpe": 0.998297,
+      "sortino": 1.307058,
+      "max_drawdown": -0.146378,
+      "calmar": 0.556
+     },
+     "annual_turnover": 5.467,
+     "gross": {
+      "mean": 0.98,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.01114327468403642,
+      "COVID_2020_03": -0.04277233717162077,
+      "RATES_2022": -0.07173603165875375
+     }
+    },
+    "DUR+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.087879,
+      "ann_vol": 0.10221,
+      "sharpe": 0.87541,
+      "sortino": 1.102691,
+      "max_drawdown": -0.302721,
+      "calmar": 0.29
+     },
+     "annual_turnover": 4.07,
+     "gross": {
+      "mean": 0.9827,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.17199732549446567,
+      "COVID_2020_03": -0.06470504967109159,
+      "RATES_2022": -0.014865230797908358
+     }
+    },
+    "BRAKE+DUR+REGIME+SLEEVE+TILT": {
+     "metrics": {
+      "cagr": 0.082535,
+      "ann_vol": 0.079796,
+      "sharpe": 1.033971,
+      "sortino": 1.351319,
+      "max_drawdown": -0.127616,
+      "calmar": 0.647
+     },
+     "annual_turnover": 6.08,
+     "gross": {
+      "mean": 0.98,
+      "max": 1.0,
+      "pct_days_gt_1.02": 0.0
+     },
+     "stress_windows": {
+      "GFC_2008_09": -0.01114327468403642,
+      "COVID_2020_03": -0.030436761591000172,
+      "RATES_2022": -0.013766415980084545
+     }
+    }
+   },
+   "shapley": {
+    "cagr": {
+     "BRAKE": -0.006913,
+     "SLEEVE": 0.000562,
+     "DUR": 0.008188,
+     "REGIME": -0.000466,
+     "TILT": 0.001332
+    },
+    "ann_vol": {
+     "BRAKE": -0.033576,
+     "SLEEVE": -0.001766,
+     "DUR": -0.00198,
+     "REGIME": -0.003165,
+     "TILT": -0.005047
+    },
+    "sharpe": {
+     "BRAKE": 0.195092,
+     "SLEEVE": 0.020637,
+     "DUR": 0.095223,
+     "REGIME": 0.007123,
+     "TILT": 0.040294
+    },
+    "sortino": {
+     "BRAKE": 0.309001,
+     "SLEEVE": 0.024336,
+     "DUR": 0.136185,
+     "REGIME": 0.0107,
+     "TILT": 0.045566
+    },
+    "max_drawdown": {
+     "BRAKE": 0.193264,
+     "SLEEVE": 0.005788,
+     "DUR": 0.027986,
+     "REGIME": 0.003621,
+     "TILT": 0.031829
+    },
+    "calmar": {
+     "BRAKE": 0.26785,
+     "SLEEVE": 0.0281,
+     "DUR": 0.10335,
+     "REGIME": -0.008483,
+     "TILT": 0.051183
+    }
+   },
+   "additivity_residuals": {
+    "cagr": 0.0,
+    "ann_vol": 0.0,
+    "sharpe": 0.0,
+    "sortino": 0.0,
+    "max_drawdown": 0.0,
+    "calmar": -0.0
+   },
+   "leave_one_out": {
+    "BRAKE": {
+     "cagr": -0.005344,
+     "ann_vol": -0.022414,
+     "sharpe": 0.158561,
+     "sortino": 0.248628,
+     "max_drawdown": 0.175105,
+     "calmar": 0.357
+    },
+    "SLEEVE": {
+     "cagr": 0.001186,
+     "ann_vol": -0.001907,
+     "sharpe": 0.035674,
+     "sortino": 0.044261,
+     "max_drawdown": 0.018762,
+     "calmar": 0.091
+    },
+    "DUR": {
+     "cagr": 0.010682,
+     "ann_vol": 0.000801,
+     "sharpe": 0.115889,
+     "sortino": 0.167916,
+     "max_drawdown": 0.024676,
+     "calmar": 0.175
+    },
+    "REGIME": {
+     "cagr": 0.00123,
+     "ann_vol": 0.003135,
+     "sharpe": -0.02424,
+     "sortino": -0.033238,
+     "max_drawdown": -0.006747,
+     "calmar": -0.026
+    },
+    "TILT": {
+     "cagr": 0.002336,
+     "ann_vol": 0.000778,
+     "sharpe": 0.017966,
+     "sortino": 0.010606,
+     "max_drawdown": 0.008078,
+     "calmar": 0.056
+    }
+   },
+   "pairwise_interactions": {
+    "BRAKE+SLEEVE": {
+     "sortino": 0.021412,
+     "max_drawdown": 0.0
+    },
+    "BRAKE+DUR": {
+     "sortino": 0.118777,
+     "max_drawdown": 0.002641
+    },
+    "BRAKE+REGIME": {
+     "sortino": -0.044623,
+     "max_drawdown": -0.005785
+    },
+    "BRAKE+TILT": {
+     "sortino": -0.086356,
+     "max_drawdown": -0.018359
+    },
+    "SLEEVE+DUR": {
+     "sortino": 0.002402,
+     "max_drawdown": 0.0
+    },
+    "SLEEVE+REGIME": {
+     "sortino": 0.003388,
+     "max_drawdown": 0.0
+    },
+    "SLEEVE+TILT": {
+     "sortino": -0.005503,
+     "max_drawdown": 0.0
+    },
+    "DUR+REGIME": {
+     "sortino": 0.051675,
+     "max_drawdown": 0.010845
+    },
+    "DUR+TILT": {
+     "sortino": 0.007383,
+     "max_drawdown": -0.01159
+    },
+    "REGIME+TILT": {
+     "sortino": 0.011121,
+     "max_drawdown": 0.005987
+    }
+   }
+  }
+ },
+ "cadence_study": {
+  "weekly_5d": {
+   "metrics": {
+    "cagr": 0.105882,
+    "ann_vol": 0.114615,
+    "sharpe": 0.935735,
+    "sortino": 1.203753,
+    "max_drawdown": -0.180045,
+    "calmar": 0.588
+   },
+   "annual_turnover": 6.269,
+   "gross": {
+    "mean": 1.0323,
+    "max": 1.1,
+    "pct_days_gt_1.02": 40.8
+   },
+   "stress_windows": {
+    "GFC_2008_09": -0.04972933964072479,
+    "COVID_2020_03": -0.06733259284594562,
+    "RATES_2022": -0.009322846691263598
+   }
+  },
+  "monthly_21d": {
+   "metrics": {
+    "cagr": 0.093719,
+    "ann_vol": 0.118192,
+    "sharpe": 0.817363,
+    "sortino": 1.023923,
+    "max_drawdown": -0.212568,
+    "calmar": 0.441
+   },
+   "annual_turnover": 3.668,
+   "gross": {
+    "mean": 1.025,
+    "max": 1.1,
+    "pct_days_gt_1.02": 34.7
+   },
+   "stress_windows": {
+    "GFC_2008_09": -0.06057957029989369,
+    "COVID_2020_03": -0.10862796732652213,
+    "RATES_2022": -0.04710149008643416
+   }
+  },
+  "quarterly_63d": {
+   "metrics": {
+    "cagr": 0.085861,
+    "ann_vol": 0.133365,
+    "sharpe": 0.684626,
+    "sortino": 0.817172,
+    "max_drawdown": -0.313381,
+    "calmar": 0.274
+   },
+   "annual_turnover": 1.857,
+   "gross": {
+    "mean": 1.0154,
+    "max": 1.1,
+    "pct_days_gt_1.02": 24.7
+   },
+   "stress_windows": {
+    "GFC_2008_09": -0.11875061336736936,
+    "COVID_2020_03": -0.12384125107317923,
+    "RATES_2022": -0.021209927771454917
+   }
+  },
+  "annual_252d": {
+   "metrics": {
+    "cagr": 0.087664,
+    "ann_vol": 0.136217,
+    "sharpe": 0.685199,
+    "sortino": 0.863237,
+    "max_drawdown": -0.328489,
+    "calmar": 0.267
+   },
+   "annual_turnover": 0.655,
+   "gross": {
+    "mean": 1.0157,
+    "max": 1.1,
+    "pct_days_gt_1.02": 20.0
+   },
+   "stress_windows": {
+    "GFC_2008_09": -0.18612325944079622,
+    "COVID_2020_03": -0.06259640463184679,
+    "RATES_2022": -0.025395346127435436
+   }
+  },
+  "drift_never": {
+   "metrics": {
+    "cagr": 0.098048,
+    "ann_vol": 0.173396,
+    "sharpe": 0.62626,
+    "sortino": 0.770647,
+    "max_drawdown": -0.476964,
+    "calmar": 0.206
+   },
+   "annual_turnover": 0.048,
+   "gross": {
+    "mean": 1.0323,
+    "max": 1.1,
+    "pct_days_gt_1.02": 40.8
+   },
+   "stress_windows": {
+    "GFC_2008_09": -0.30974938004884034,
+    "COVID_2020_03": -0.1609258863275086,
+    "RATES_2022": -0.12247227606534394
+   }
+  }
+ }
+}
